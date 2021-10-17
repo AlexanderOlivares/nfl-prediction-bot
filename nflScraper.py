@@ -56,25 +56,52 @@ predictEm_individual_team_prediction = re.findall(
     '(?<=\d{3}: ).+', predictEm_all_text)
 
 predictEm_formatted_data = []
-for i in range(0, len(predictEm_individual_team_prediction) - 1, 2):
-    predictEm_formatted_data.append(
-        [predictEm_individual_team_prediction[i], predictEm_individual_team_prediction[i + 1]])
+for i in range(0, len(predictEm_individual_team_prediction)):
+    predictEm_formatted_data.append(predictEm_individual_team_prediction[i])
 
-# UNCOMMENT FOR FINAL PREDICTEM DATAJ
-# print(predictEm_formatted_data)
+# UNCOMMENT FOR FINAL PREDICTEM DATA
+print(predictEm_formatted_data)
 
 ####################### ODD SHARK BELOW ###############################################
 driver.execute_script("window.open('');")
 driver.switch_to.window(driver.window_handles[2])
 driver.get('https://www.oddsshark.com/nfl/scores')
 
+
 time.sleep(3)
 oddShark_scoreboard = driver.find_element_by_class_name('scoreboard')
 oddShark_all_text = oddShark_scoreboard.text.split('\n')
-##################################
-# NEED TO FORMAT THIS
-print(oddShark_all_text)
-##################################
+
+reg_exp_oddShark = re.compile("^(\d{1,2}[\.]?[\d]?)$")
+oddShark_regex_match_score_with_over_under = list(
+    filter(reg_exp_oddShark.match, oddShark_all_text))
+oddShark_regex_match_score_with_over_under.insert(0, '0 index place filler')
+
+oddShark_predcted_scores_only = []
+
+for i in range(0, len(oddShark_regex_match_score_with_over_under)):
+    if i % 3 != 0:
+        oddShark_predcted_scores_only.append(
+            oddShark_regex_match_score_with_over_under[i])
+
+
+nfl_team_lookup = ["Cardinals", "Falcons", "Ravens", "Bills", "Panthers", "Bears", "Bengals", "Browns", "Cowboys", "Broncos", "Lions", "Packers", "Texans", "Colts", "Jaguars", "Chiefs",
+                   "Raiders", "Chargers", "Rams", "Dolphins", "Vikings", "Patriots", "Saints", "Giants", "Jets", "Eagles", "Steelers", "49ers", "Seahawks", "Buccaneers", "Titans", "Football Team"]
+
+oddShark_active_team_names = []
+
+for i in oddShark_all_text:
+    if i in nfl_team_lookup:
+        oddShark_active_team_names.append(i)
+
+oddShark_formatted_data = []
+
+for i in range(0, len(oddShark_predcted_scores_only)):
+    team_name = oddShark_active_team_names[i]
+    predicted_score = oddShark_predcted_scores_only[i]
+    oddShark_formatted_data.append([team_name, predicted_score])
+
+print(oddShark_formatted_data)
 
 time.sleep(7)
 driver.quit()
