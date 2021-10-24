@@ -14,33 +14,34 @@ dRatings_game_table = driver.find_element_by_class_name('table-body')
 dRating_team_names = dRatings_game_table.find_elements_by_class_name(
     'ta--left.tf--body')
 
-dRating_machup = []
+# washington football team is going to labled just by "Team"
+dRating_team_name_list = []
 for i in dRating_team_names:
-    teams = i.text.split('\n')
-    dRating_machup.append(teams)
+    teams = re.findall('\w+(?= \(\d+-\d+\))', i.text)
+    for i in teams:
+        dRating_team_name_list.append(i)
 
 dRatings_percentages_and_points = dRatings_game_table.find_elements_by_class_name(
     'table-division')
 
-dRatings_percentages = []
 dRatings_predicted_scores = []
 for i in dRatings_percentages_and_points:
     data_list = i.text.split('\n')
     if len(data_list) > 1:
-        if data_list[0].endswith('%'):
-            dRatings_percentages.append(data_list)
-        else:
-            dRatings_predicted_scores.append(data_list)
+        for i in data_list:
+            if not i.endswith('%'):
+                dRatings_predicted_scores.append(float(i))
 
 dRatings_formatted_data = []
-dRatings_zip = (zip(dRating_machup, dRatings_percentages,
-                dRatings_predicted_scores))
-for i in dRatings_zip:
-    dRatings_formatted_data.append(tuple(i))
+
+for i in range(0, len(dRating_team_name_list)):
+    dRatings_formatted_data.append(
+        [dRating_team_name_list[i], dRatings_predicted_scores[i]])
 
 # UNCOMMENT FOR FINAL DRATINGS DATA
-# for i in dRatings_formatted_data:
-#     print(i)
+print('DRATINGS DATA:')
+print(dRatings_formatted_data)
+print('---------------------------')
 
 
 #################### PREDICTEM BELOW ################################################
@@ -57,10 +58,26 @@ predictEm_individual_team_prediction = re.findall(
 
 predictEm_formatted_data = []
 for i in range(0, len(predictEm_individual_team_prediction)):
-    predictEm_formatted_data.append(predictEm_individual_team_prediction[i])
+    predictEm_regex_split = "\s(?=\d+)"
+    predictEm_formatted_data.append(
+        re.split(predictEm_regex_split, predictEm_individual_team_prediction[i]))
 
+
+def make_lowercase_and_number(two_dim_list):
+    formatted = []
+    for i in two_dim_list:
+        lower_case_team_and_number_score = []
+        lower_case_team_and_number_score.append(i[0][0] + i[0][1:].lower())
+        lower_case_team_and_number_score.append(float(i[1]))
+        formatted.append(lower_case_team_and_number_score)
+    return formatted
+
+
+predictEm_formatted_data = make_lowercase_and_number(predictEm_formatted_data)
 # UNCOMMENT FOR FINAL PREDICTEM DATA
+print('predicetm data:')
 print(predictEm_formatted_data)
+print('---------------------------')
 
 ####################### ODD SHARK BELOW ###############################################
 driver.execute_script("window.open('');")
@@ -98,9 +115,10 @@ oddShark_formatted_data = []
 
 for i in range(0, len(oddShark_predcted_scores_only)):
     team_name = oddShark_active_team_names[i]
-    predicted_score = oddShark_predcted_scores_only[i]
+    predicted_score = float(oddShark_predcted_scores_only[i])
     oddShark_formatted_data.append([team_name, predicted_score])
 
+print('oddshark DATA:')
 print(oddShark_formatted_data)
 
 time.sleep(7)
