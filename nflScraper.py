@@ -3,6 +3,10 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 import time
 import re
+import teamDict
+import json
+
+team_lookup = teamDict.lookup
 
 driver = webdriver.Chrome(
     '/Users/alexolivares/Desktop/items/automate/chromedriver')
@@ -43,6 +47,13 @@ print('DRATINGS DATA:')
 print(dRatings_formatted_data)
 print('---------------------------')
 
+predictions = {}
+
+for i in dRatings_formatted_data:
+    predictions[i[0]] = {
+        "dRatings": i[1]
+    }
+
 
 #################### PREDICTEM BELOW ################################################
 # OPEN NEW TAB
@@ -78,6 +89,27 @@ predictEm_formatted_data = make_lowercase_and_number(predictEm_formatted_data)
 print('predicetm data:')
 print(predictEm_formatted_data)
 print('---------------------------')
+
+
+for i in predictEm_formatted_data:
+    location_regex = r'(?i){0}'.format(i[0])
+    for j in team_lookup:
+        full_name_found = re.findall(location_regex, j["full_name"])
+        if full_name_found:
+            if j["name"] in predictions:
+                predictions[j["name"]]["predictEm"] = i[1]
+            else:
+                predictions[j["name"]] = {
+                    "predictEm": i[1]
+                }
+        elif "alt" in j:
+            if j["alt"] in predictions:
+                predictions[j["name"]]["predictEm"] = i[1]
+            else:
+                predictions[j["name"]] = {
+                    "predictEm": i[1]
+                }
+
 
 ####################### ODD SHARK BELOW ###############################################
 driver.execute_script("window.open('');")
@@ -120,6 +152,18 @@ for i in range(0, len(oddShark_predcted_scores_only)):
 
 print('oddshark DATA:')
 print(oddShark_formatted_data)
+
+
+for i in oddShark_formatted_data:
+    if i[0] in predictions:
+        predictions[i[0]]["oddShark"] = i[1]
+    else:
+        predictions[i[0]] = {
+            "oddShark": i[1]
+        }
+
+print("************** PREDICTIONS **************")
+print(json.dumps(predictions, indent=2))
 
 time.sleep(7)
 driver.quit()
