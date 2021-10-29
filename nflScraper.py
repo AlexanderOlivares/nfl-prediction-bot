@@ -5,6 +5,12 @@ import time
 import re
 import teamDict
 import json
+from pyfiglet import Figlet
+
+f = Figlet(font='smslant')
+# f = Figlet(fonts)
+# print(f)
+print(f.renderText("Loading..."))
 
 team_lookup = teamDict.lookup
 
@@ -43,7 +49,7 @@ for i in range(0, len(dRating_team_name_list)):
         [dRating_team_name_list[i], dRatings_predicted_scores[i]])
 
 # UNCOMMENT FOR FINAL DRATINGS DATA
-print('DRATINGS DATA:')
+print(f.renderText("dRatings Scores"))
 print(dRatings_formatted_data)
 print('---------------------------')
 
@@ -86,7 +92,7 @@ def make_lowercase_and_number(two_dim_list):
 
 predictEm_formatted_data = make_lowercase_and_number(predictEm_formatted_data)
 # UNCOMMENT FOR FINAL PREDICTEM DATA
-print('predicetm data:')
+print(f.renderText("predictEm Scores"))
 print(predictEm_formatted_data)
 print('---------------------------')
 
@@ -103,7 +109,7 @@ for i in predictEm_formatted_data:
                     "predictEm": i[1]
                 }
         elif "alt" in j:
-            if j["alt"] in predictions:
+            if j["name"] in predictions:
                 predictions[j["name"]]["predictEm"] = i[1]
             else:
                 predictions[j["name"]] = {
@@ -148,9 +154,11 @@ oddShark_formatted_data = []
 for i in range(0, len(oddShark_predcted_scores_only)):
     team_name = oddShark_active_team_names[i]
     predicted_score = float(oddShark_predcted_scores_only[i])
+    if team_name == "Football Team":
+        team_name = "Team"
     oddShark_formatted_data.append([team_name, predicted_score])
 
-print('oddshark DATA:')
+print(f.renderText("oddShark Scores"))
 print(oddShark_formatted_data)
 
 
@@ -162,8 +170,43 @@ for i in oddShark_formatted_data:
             "oddShark": i[1]
         }
 
-print("************** PREDICTIONS **************")
-print(json.dumps(predictions, indent=2))
+
+for key in predictions:
+    dict = predictions[key]
+    total = 0
+    total_predictions = 0
+    for i in dict:
+        total += dict[i]
+        total_predictions += 1
+    average = round(total / total_predictions, 1)
+    predictions[key]["average"] = average
+
+# print(json.dumps(predictions, indent=2))
+
+driver.execute_script("window.open('');")
+driver.switch_to.window(driver.window_handles[3])
+driver.get('https://www.nfl.com/schedules/')
+
+time.sleep(3)
+
+nfl_com_schedule = driver.find_element_by_id("main-content")
+nfl_com_sched = nfl_com_schedule.text.split('\n')
+
+matchups = []
+head_to_head = []
+for i in nfl_com_sched:
+    if i in predictions:
+        head_to_head.append({i: predictions[i]})
+    if i == "Washington":
+        head_to_head.append({"Team": predictions["Team"]})
+    if len(head_to_head) == 2:
+        matchups.append(head_to_head)
+        matchups.append("----------------------------")
+        head_to_head = []
+
+print(f.renderText("Predictions"))
+print(json.dumps(matchups, indent=4))
+print(f.renderText("good luck!"))
 
 time.sleep(7)
 driver.quit()

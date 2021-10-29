@@ -95,7 +95,8 @@ lookup = [
     {
         "code": "KC",
         "name": "Chiefs",
-        "full_name": "Kansas City Chiefs"
+        "full_name": "Kansas City Chiefs",
+        "alt": "Kansas city",
     },
     {
         "code": "LA",
