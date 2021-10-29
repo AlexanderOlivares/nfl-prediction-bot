@@ -1,21 +1,3 @@
-
-# gather team name as a key
-# make array of scores as valu
-# nflDict = {
-#     "Cowboys": {
-#         "dRatings": 23.1,
-#         "oddShark": 19.1,
-#         "predictEm": 22.9,
-#         "average": 23.4
-#     }
-# }
-# print(nflDict["Cowboys"]["average"])
-
-nflDict = {
-    "DAL DALLAS Dallas Cowboys": "Cowboys",
-    "DAL DALLAS Dallas Cowboys": "Cowboys"
-}
-
 lookup = [
     {
         "code": "ARI",
