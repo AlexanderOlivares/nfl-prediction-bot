@@ -181,10 +181,31 @@ for key in predictions:
     average = round(total / total_predictions, 1)
     predictions[key]["average"] = average
 
-# print(json.dumps(predictions, indent=2))
 
 driver.execute_script("window.open('');")
 driver.switch_to.window(driver.window_handles[3])
+driver.get('https://www.espn.com/nfl/lines')
+
+espn_com = driver.find_elements_by_class_name('Table__TR')
+
+for i in espn_com:
+    team_name_and_data = i.text.split('\n')
+    if len(team_name_and_data) == 2:
+        full_team_name, data = team_name_and_data
+        regex_line_finder = '(?<=\) )\-\d+[.]?\d'
+        line_list = re.findall(regex_line_finder, data)
+        if (len(line_list) == 1):
+            line = float(line_list[0])
+            fav = full_team_name.split(' ')[-1]
+            if line < 0:
+                predictions[fav]["favoredBy"] = line
+                predictions[fav]["avgMinusSpread"] = round(
+                    predictions[fav]["average"] + line, 1)
+
+
+# THIS WILL ORDER PREDICTIONS BY MATCHUP
+driver.execute_script("window.open('');")
+driver.switch_to.window(driver.window_handles[4])
 driver.get('https://www.nfl.com/schedules/')
 
 time.sleep(3)
@@ -201,12 +222,12 @@ for i in nfl_com_sched:
         head_to_head.append({"Team": predictions["Team"]})
     if len(head_to_head) == 2:
         matchups.append(head_to_head)
-        matchups.append("----------------------------")
         head_to_head = []
 
 print(f.renderText("Predictions"))
 print(json.dumps(matchups, indent=4))
 print(f.renderText("good luck!"))
+
 
 time.sleep(7)
 driver.quit()
