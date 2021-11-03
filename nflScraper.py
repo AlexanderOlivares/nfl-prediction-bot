@@ -1,16 +1,12 @@
 from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
 import time
 import re
 import teamDict
 import json
 from pyfiglet import Figlet
 
-f = Figlet(font='smslant')
-# f = Figlet(fonts)
-# print(f)
-print(f.renderText("Loading..."))
+figlet = Figlet(font='smslant')
+print(figlet.renderText("Loading..."))
 
 team_lookup = teamDict.lookup
 
@@ -18,6 +14,8 @@ driver = webdriver.Chrome(
     '/Users/alexolivares/Desktop/items/automate/chromedriver')
 
 driver.get('https://www.dratings.com/predictor/nfl-football-predictions/')
+# driver.get(
+#     'https://www.dratings.com/predictor/nfl-football-predictions/upcoming/4#scroll-upcoming')
 
 dRatings_game_table = driver.find_element_by_class_name('table-body')
 
@@ -48,12 +46,15 @@ for i in range(0, len(dRating_team_name_list)):
     dRatings_formatted_data.append(
         [dRating_team_name_list[i], dRatings_predicted_scores[i]])
 
-# UNCOMMENT FOR FINAL DRATINGS DATA
-print(f.renderText("dRatings Scores"))
+print(figlet.renderText("dRatings Scores"))
 print(dRatings_formatted_data)
 print('---------------------------')
 
-predictions = {}
+predictions = {
+    "Team": {
+        "dRatings": 1
+    }
+}
 
 for i in dRatings_formatted_data:
     predictions[i[0]] = {
@@ -91,8 +92,8 @@ def make_lowercase_and_number(two_dim_list):
 
 
 predictEm_formatted_data = make_lowercase_and_number(predictEm_formatted_data)
-# UNCOMMENT FOR FINAL PREDICTEM DATA
-print(f.renderText("predictEm Scores"))
+
+print(figlet.renderText("predictEm Scores"))
 print(predictEm_formatted_data)
 print('---------------------------')
 
@@ -158,7 +159,7 @@ for i in range(0, len(oddShark_predcted_scores_only)):
         team_name = "Team"
     oddShark_formatted_data.append([team_name, predicted_score])
 
-print(f.renderText("oddShark Scores"))
+print(figlet.renderText("oddShark Scores"))
 print(oddShark_formatted_data)
 
 
@@ -182,6 +183,7 @@ for key in predictions:
     predictions[key]["average"] = average
 
 
+#################### GET LINES FROM ESPN ##############################
 driver.execute_script("window.open('');")
 driver.switch_to.window(driver.window_handles[3])
 driver.get('https://www.espn.com/nfl/lines')
@@ -192,7 +194,9 @@ for i in espn_com:
     team_name_and_data = i.text.split('\n')
     if len(team_name_and_data) == 2:
         full_team_name, data = team_name_and_data
-        regex_line_finder = '(?<=\) )\-\d+[.]?\d'
+        # regex_line_finder = '(?<=\) )\-\d+[.]?\d'
+        # changed reg to below (need to test)
+        regex_line_finder = '(?<=\) )\-\d+\.\d{1}'
         line_list = re.findall(regex_line_finder, data)
         if (len(line_list) == 1):
             line = float(line_list[0])
@@ -203,10 +207,11 @@ for i in espn_com:
                     predictions[fav]["average"] + line, 1)
 
 
-# THIS WILL ORDER PREDICTIONS BY MATCHUP
+################### ORDER PREDICTIONS BY CURRENT WEEKLY MATCHUP ###################
 driver.execute_script("window.open('');")
 driver.switch_to.window(driver.window_handles[4])
 driver.get('https://www.nfl.com/schedules/')
+# driver.get('https://www.nfl.com/schedules/2021/REG9/')
 
 time.sleep(3)
 
@@ -224,9 +229,9 @@ for i in nfl_com_sched:
         matchups.append(head_to_head)
         head_to_head = []
 
-print(f.renderText("Predictions"))
+print(figlet.renderText("Predictions"))
 print(json.dumps(matchups, indent=4))
-print(f.renderText("good luck!"))
+print(figlet.renderText("good luck!"))
 
 
 time.sleep(7)
