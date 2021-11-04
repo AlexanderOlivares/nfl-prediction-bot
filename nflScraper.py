@@ -22,7 +22,9 @@ dRatings_game_table = driver.find_element_by_class_name('table-body')
 dRating_team_names = dRatings_game_table.find_elements_by_class_name(
     'ta--left.tf--body')
 
-# washington football team is going to labled just by "Team"
+################################################################
+# washington football team is going to labled just as "Team"
+################################################################
 dRating_team_name_list = []
 for i in dRating_team_names:
     teams = re.findall('\w+(?= \(\d+-\d+\))', i.text)
@@ -48,7 +50,6 @@ for i in range(0, len(dRating_team_name_list)):
 
 print(figlet.renderText("dRatings Scores"))
 print(dRatings_formatted_data)
-print('---------------------------')
 
 predictions = {
     "Team": {
@@ -63,7 +64,6 @@ for i in dRatings_formatted_data:
 
 
 #################### PREDICTEM BELOW ################################################
-# OPEN NEW TAB
 driver.execute_script("window.open('');")
 driver.switch_to.window(driver.window_handles[1])
 driver.get('https://www.predictem.com/nfl/nfl-football-computer-picks-simulated-predictions-for-each-pro-football-game-every-week/')
@@ -194,8 +194,6 @@ for i in espn_com:
     team_name_and_data = i.text.split('\n')
     if len(team_name_and_data) == 2:
         full_team_name, data = team_name_and_data
-        # regex_line_finder = '(?<=\) )\-\d+[.]?\d'
-        # changed reg to below (need to test)
         regex_line_finder = '(?<=\) )\-\d+\.\d{1}'
         line_list = re.findall(regex_line_finder, data)
         if (len(line_list) == 1):
@@ -229,9 +227,32 @@ for i in nfl_com_sched:
         matchups.append(head_to_head)
         head_to_head = []
 
-print(figlet.renderText("Predictions"))
+print(figlet.renderText("Raw Data"))
 print(json.dumps(matchups, indent=4))
-print(figlet.renderText("good luck!"))
+print(figlet.renderText("Picks"))
+
+################### PRINT OUT FINAL PICKS ###################
+for matchup in matchups:
+    fav_team = ""
+    avg_minus_spread = 0
+    favored_by = 0
+    dog_team = ""
+    dog_avg = 0
+    for team in matchup:
+        team_name = list(team)[0]
+        if "avgMinusSpread" in predictions[team_name]:
+            fav_team = team_name
+            avg_minus_spread = predictions[team_name]["avgMinusSpread"]
+            favored_by = abs(predictions[team_name]["favoredBy"])
+        else:
+            dog_team = team_name
+            dog_avg = predictions[team_name]["average"]
+    if avg_minus_spread == dog_avg:
+        print("PUSH " + fav_team + " vs " + dog_team)
+    if avg_minus_spread > dog_avg:
+        print("Pick " + fav_team + " -" + str(favored_by))
+    else:
+        print("Pick " + dog_team + " +" + str(favored_by))
 
 
 time.sleep(7)
