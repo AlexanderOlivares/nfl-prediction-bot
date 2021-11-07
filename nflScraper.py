@@ -249,7 +249,7 @@ for matchup in matchups:
             dog_avg = predictions[team_name]["average"]
     if avg_minus_spread == dog_avg:
         print("PUSH " + fav_team + " vs " + dog_team)
-    if avg_minus_spread > dog_avg:
+    elif avg_minus_spread > dog_avg:
         print("Pick " + fav_team + " -" + str(favored_by))
     else:
         print("Pick " + dog_team + " +" + str(favored_by))
