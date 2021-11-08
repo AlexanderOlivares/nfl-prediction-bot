@@ -1,9 +1,19 @@
+from posix import environ
 from selenium import webdriver
 import time
 import re
 import teamDict
 import json
 from pyfiglet import Figlet
+import psycopg2
+import os
+
+host = os.environ.get('nfl_scraper_hostname')
+database = os.environ.get('nfl_scraper_database')
+user = os.environ.get('nfl_scraper_username')
+password = os.environ.get('nfl_scraper_password')
+port = os.environ.get('nfl_scraper_port')
+
 
 figlet = Figlet(font='smslant')
 print(figlet.renderText("Loading..."))
@@ -224,12 +234,40 @@ for i in nfl_com_sched:
     if i == "Washington":
         head_to_head.append({"Team": predictions["Team"]})
     if len(head_to_head) == 2:
+        ####################################
+        # write away and home teams plus score to db here
+        ####################################
         matchups.append(head_to_head)
         head_to_head = []
 
 print(figlet.renderText("Raw Data"))
 print(json.dumps(matchups, indent=4))
 print(figlet.renderText("Picks"))
+
+############################ WRITE TO DB ###########################################
+try:
+    conn = psycopg2.connect(
+        host=host,
+        database=database,
+        user=user,
+        password=password,
+        port=port
+    )
+    cur = conn.cursor()
+
+#############################
+# move db operations here
+#############################
+
+except Exception as error:
+    print(error)
+finally:
+    if cur is not None:
+        print('cursor was open')
+        cur.close()
+    if conn is not None:
+        print('connection was open')
+        conn.close()
 
 ################### PRINT OUT FINAL PICKS ###################
 for matchup in matchups:
