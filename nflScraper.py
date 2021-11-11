@@ -1,3 +1,4 @@
+from posix import environ
 from selenium import webdriver
 import time
 import re
@@ -225,7 +226,25 @@ time.sleep(3)
 nfl_com_schedule = driver.find_element_by_id("main-content")
 nfl_com_sched = nfl_com_schedule.text.split('\n')
 
-############################ DB CONNECTION ###########################################
+matchups = []
+head_to_head = []
+for i in nfl_com_sched:
+    if i in predictions:
+        head_to_head.append({i: predictions[i]})
+    if i == "Washington":
+        head_to_head.append({"Team": predictions["Team"]})
+    if len(head_to_head) == 2:
+        ####################################
+        # write away and home teams plus score to db here
+        ####################################
+        matchups.append(head_to_head)
+        head_to_head = []
+
+print(figlet.renderText("Raw Data"))
+print(json.dumps(matchups, indent=4))
+print(figlet.renderText("Picks"))
+
+############################ WRITE TO DB ###########################################
 try:
     conn = psycopg2.connect(
         host=host,
@@ -235,92 +254,10 @@ try:
         port=port
     )
     cur = conn.cursor()
-######################################################################################
 
-    matchups = []
-    head_to_head = []
-    for i in nfl_com_sched:
-        if i in predictions:
-            head_to_head.append({i: predictions[i]})
-        if i == "Washington":
-            head_to_head.append({"Team": predictions["Team"]})
-        if len(head_to_head) == 2:
-            ############################################################
-            # write away and home teams plus score to db here
-            away_team = list(head_to_head[0])[0]
-            home_team = list(head_to_head[1])[0]
-            away_predicted = 0
-            home_predicted = 0
-            favored_team = ""
-
-            if "avgMinusSpread" in predictions[away_team]:
-                away_predicted = predictions[away_team]["avgMinusSpread"]
-                favored_team = away_team
-            else:
-                away_predicted = predictions[away_team]["average"]
-
-            if "avgMinusSpread" in predictions[home_team]:
-                home_predicted = predictions[home_team]["avgMinusSpread"]
-                favored_team = home_team
-            else:
-                home_predicted = predictions[home_team]["average"]
-
-            insert_command = 'INSERT INTO 2021_nfl_week_10 (away_team, away_predicted, home_team, home_predicted, favored_team) VALUES (%s, %s, %s, %s, %s)'
-            insert_values = (away_team, away_predicted,
-                             home_team, home_predicted, favored_team)
-            cur.execute(insert_command, insert_values)
-            conn.commit()
-            ############################################################
-            matchups.append(head_to_head)
-            head_to_head = []
-
-    print(figlet.renderText("Raw Data"))
-    print(json.dumps(matchups, indent=4))
-
-
-################### PRINT OUT FINAL PICKS ###################
-    print(figlet.renderText("Picks"))
-    for matchup in matchups:
-        fav_team = ""
-        avg_minus_spread = 0
-        favored_by = 0
-        dog_team = ""
-        dog_avg = 0
-        for team in matchup:
-            team_name = list(team)[0]
-            if "avgMinusSpread" in predictions[team_name]:
-                fav_team = team_name
-                avg_minus_spread = predictions[team_name]["avgMinusSpread"]
-                favored_by = abs(predictions[team_name]["favoredBy"])
-
-            ############################################################
-                insert_command = 'INSERT INTO 2021_nfl_week_10 (vegas_line) VALUES (%s)'
-                insert_value = (favored_by)
-                cur.execute(insert_command, insert_value)
-                conn.commit()
-            ############################################################
-            else:
-                dog_team = team_name
-                dog_avg = predictions[team_name]["average"]
-        ############################################################
-        pick = ""
-        ############################################################
-        if avg_minus_spread == dog_avg:
-            print("PUSH " + fav_team + " vs " + dog_team)
-            pick = "PUSH " + fav_team + " vs " + dog_team
-        elif avg_minus_spread > dog_avg:
-            print("Pick " + fav_team + " -" + str(favored_by))
-            pick = "Pick " + fav_team + " -" + str(favored_by)
-        else:
-            print("Pick " + dog_team + " +" + str(favored_by))
-            pick = "Pick " + dog_team + " +" + str(favored_by)
-
-        ############################################################
-        insert_command = 'INSERT INTO 2021_nfl_week_10 (pick) VALUES (%s)'
-        insert_value = (pick)
-        cur.execute(insert_command, insert_value)
-        conn.commit()
-        ############################################################
+#############################
+# move db operations here
+#############################
 
 except Exception as error:
     print(error)
@@ -331,6 +268,30 @@ finally:
     if conn is not None:
         print('connection was open')
         conn.close()
+
+################### PRINT OUT FINAL PICKS ###################
+for matchup in matchups:
+    fav_team = ""
+    avg_minus_spread = 0
+    favored_by = 0
+    dog_team = ""
+    dog_avg = 0
+    for team in matchup:
+        team_name = list(team)[0]
+        if "avgMinusSpread" in predictions[team_name]:
+            fav_team = team_name
+            avg_minus_spread = predictions[team_name]["avgMinusSpread"]
+            favored_by = abs(predictions[team_name]["favoredBy"])
+        else:
+            dog_team = team_name
+            dog_avg = predictions[team_name]["average"]
+    if avg_minus_spread == dog_avg:
+        print("PUSH " + fav_team + " vs " + dog_team)
+    elif avg_minus_spread > dog_avg:
+        print("Pick " + fav_team + " -" + str(favored_by))
+    else:
+        print("Pick " + dog_team + " +" + str(favored_by))
+
 
 time.sleep(7)
 driver.quit()
