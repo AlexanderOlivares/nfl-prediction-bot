@@ -79,10 +79,21 @@ driver.switch_to.window(driver.window_handles[1])
 driver.get('https://www.predictem.com/nfl/nfl-football-computer-picks-simulated-predictions-for-each-pro-football-game-every-week/')
 
 predictEm_predictions = driver.find_element_by_class_name('et_pb_text_inner')
-predictEm_all_text = predictEm_predictions.text
+predictEm_all_text = predictEm_predictions.text.split('\n')
+
+dividing_index_from_prev_scores = 0
+for i in predictEm_all_text:
+    if i.endswith("Computer Picks"):
+        break
+    else:
+        dividing_index_from_prev_scores += 1
+
+this_weeks_games_only = predictEm_all_text[:dividing_index_from_prev_scores]
+current_week_matchups = ('\n').join(this_weeks_games_only)
 
 predictEm_individual_team_prediction = re.findall(
-    '(?<=\d{3}: ).+', predictEm_all_text)
+    '(?<=\d{3}: ).+', current_week_matchups)
+predictEm_all_text = predictEm_predictions.text
 
 predictEm_formatted_data = []
 for i in range(0, len(predictEm_individual_team_prediction)):
