@@ -12,8 +12,3 @@ CREATE TABLE 2021_nfl_week_9(
 	su_result,
 );
 
-    # insert_test = """ INSERT INTO test (name, team) VALUES (%s, %s) """
-    # insert_vals = ('jaxxy', 'jets')
-    # cur.execute(insert_test, insert_vals)
-    # conn.commit()
-    # print('values added')

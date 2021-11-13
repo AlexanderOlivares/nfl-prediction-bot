@@ -1,4 +1,3 @@
-from posix import environ
 from selenium import webdriver
 import time
 import re
@@ -14,52 +13,50 @@ user = os.environ.get('nfl_scraper_username')
 password = os.environ.get('nfl_scraper_password')
 port = os.environ.get('nfl_scraper_port')
 
-
 figlet = Figlet(font='smslant')
 print(figlet.renderText("Loading..."))
 
 team_lookup = teamDict.lookup
 
+###############################################################################
+# DRATINGS BELOW
+###############################################################################
 driver = webdriver.Chrome(
     '/Users/alexolivares/Desktop/items/automate/chromedriver')
 
 driver.get('https://www.dratings.com/predictor/nfl-football-predictions/')
-# driver.get(
-#     'https://www.dratings.com/predictor/nfl-football-predictions/upcoming/4#scroll-upcoming')
 
 dRatings_game_table = driver.find_element_by_class_name('table-body')
 
 dRating_team_names = dRatings_game_table.find_elements_by_class_name(
     'ta--left.tf--body')
 
-################################################################
+###############################################################################
 # washington football team is going to labled just as "Team"
-################################################################
-dRating_team_name_list = []
+###############################################################################
+
+drating_team_name_list = []
 for i in dRating_team_names:
     teams = re.findall('\w+(?= \(\d+-\d+\))', i.text)
     for i in teams:
-        dRating_team_name_list.append(i)
+        drating_team_name_list.append(i)
 
-dRatings_percentages_and_points = dRatings_game_table.find_elements_by_class_name(
+dratings_percentages_and_points = dRatings_game_table.find_elements_by_class_name(
     'table-division')
 
-dRatings_predicted_scores = []
-for i in dRatings_percentages_and_points:
+dratings_predicted_scores = []
+for i in dratings_percentages_and_points:
     data_list = i.text.split('\n')
     if len(data_list) > 1:
         for i in data_list:
             if not i.endswith('%'):
-                dRatings_predicted_scores.append(float(i))
+                dratings_predicted_scores.append(float(i))
 
-dRatings_formatted_data = []
+dratings_formatted_data = []
 
-for i in range(0, len(dRating_team_name_list)):
-    dRatings_formatted_data.append(
-        [dRating_team_name_list[i], dRatings_predicted_scores[i]])
-
-print(figlet.renderText("dRatings Scores"))
-print(dRatings_formatted_data)
+for i in range(0, len(drating_team_name_list)):
+    dratings_formatted_data.append(
+        [drating_team_name_list[i], dratings_predicted_scores[i]])
 
 predictions = {
     "Team": {
@@ -67,13 +64,54 @@ predictions = {
     }
 }
 
-for i in dRatings_formatted_data:
+for i in dratings_formatted_data:
     predictions[i[0]] = {
         "dRatings": i[1]
     }
 
+print(figlet.renderText("dRatings Scores"))
+print(dratings_formatted_data)
 
-#################### PREDICTEM BELOW ################################################
+###############################################################################
+# If only thursday game is showing there will only be 2 teams in dratings_formatted_data
+# open next page for to get all the sunday/monday games
+###############################################################################
+if len(dratings_formatted_data) == 2:
+    driver.get(
+        'https://www.dratings.com/predictor/nfl-football-predictions/upcoming/4#scroll-upcoming')
+
+    drating_team_name_list = []
+    for i in dRating_team_names:
+        teams = re.findall('\w+(?= \(\d+-\d+\))', i.text)
+        for i in teams:
+            drating_team_name_list.append(i)
+
+    dratings_percentages_and_points = dRatings_game_table.find_elements_by_class_name(
+        'table-division')
+
+    dratings_predicted_scores = []
+    for i in dratings_percentages_and_points:
+        data_list = i.text.split('\n')
+        if len(data_list) > 1:
+            for i in data_list:
+                if not i.endswith('%'):
+                    dratings_predicted_scores.append(float(i))
+
+    dratings_formatted_data = []
+
+    for i in range(0, len(drating_team_name_list)):
+        dratings_formatted_data.append(
+            [drating_team_name_list[i], dratings_predicted_scores[i]])
+
+    for i in dratings_formatted_data:
+        predictions[i[0]] = {
+            "dRatings": i[1]
+        }
+
+
+###############################################################################
+# PREDICTEM BELOW
+###############################################################################
 driver.execute_script("window.open('');")
 driver.switch_to.window(driver.window_handles[1])
 driver.get('https://www.predictem.com/nfl/nfl-football-computer-picks-simulated-predictions-for-each-pro-football-game-every-week/')
@@ -81,31 +119,18 @@ driver.get('https://www.predictem.com/nfl/nfl-football-computer-picks-simulated-
 predictEm_predictions = driver.find_element_by_class_name('et_pb_text_inner')
 predictEm_all_text = predictEm_predictions.text.split('\n')
 
-<<<<<<< HEAD
-
-# predictEm_all_text = predictEm_all_text.split('\n')
-# print(predictEm_all_text)
-=======
->>>>>>> main
 dividing_index_from_prev_scores = 0
 for i in predictEm_all_text:
     if i.endswith("Computer Picks"):
         break
     else:
         dividing_index_from_prev_scores += 1
-<<<<<<< HEAD
-=======
-
->>>>>>> main
 this_weeks_games_only = predictEm_all_text[:dividing_index_from_prev_scores]
 current_week_matchups = ('\n').join(this_weeks_games_only)
 
 predictEm_individual_team_prediction = re.findall(
     '(?<=\d{3}: ).+', current_week_matchups)
-<<<<<<< HEAD
-=======
 predictEm_all_text = predictEm_predictions.text
->>>>>>> main
 
 predictEm_formatted_data = []
 for i in range(0, len(predictEm_individual_team_prediction)):
@@ -151,7 +176,9 @@ for i in predictEm_formatted_data:
                 }
 
 
-####################### ODD SHARK BELOW ###############################################
+###############################################################################
+# ODD SHARK BELOW
+###############################################################################
 driver.execute_script("window.open('');")
 driver.switch_to.window(driver.window_handles[2])
 driver.get('https://www.oddsshark.com/nfl/scores')
@@ -216,7 +243,9 @@ for key in predictions:
     predictions[key]["average"] = average
 
 
-#################### GET LINES FROM ESPN ##############################
+###############################################################################
+# GET VEGAS LINES FROM ESPN
+###############################################################################
 driver.execute_script("window.open('');")
 driver.switch_to.window(driver.window_handles[3])
 driver.get('https://www.espn.com/nfl/lines')
@@ -238,17 +267,23 @@ for i in espn_com:
                     predictions[fav]["average"] + line, 1)
 
 
-################### ORDER PREDICTIONS BY CURRENT WEEKLY MATCHUP ###################
+###############################################################################
+# ORDER PREDICTIONS BY CURRENT WEEKLY MATCHUP
+###############################################################################
 driver.execute_script("window.open('');")
 driver.switch_to.window(driver.window_handles[4])
 driver.get('https://www.nfl.com/schedules/')
+# sub week number after reg for specific week
 # driver.get('https://www.nfl.com/schedules/2021/REG9/')
 
 time.sleep(3)
 
 nfl_com_schedule = driver.find_element_by_id("main-content")
 nfl_com_sched = nfl_com_schedule.text.split('\n')
-############################ WRITE TO DB ###########################################
+
+###############################################################################
+# WRITE TO DB
+###############################################################################
 try:
     conn = psycopg2.connect(
         host=host,
@@ -267,8 +302,6 @@ try:
         if i == "Washington":
             head_to_head.append({"Team": predictions["Team"]})
         if len(head_to_head) == 2:
-            ####################################
-            # write away and home teams plus score to db here
             away_team = list(head_to_head[0])[0]
             home_team = list(head_to_head[1])[0]
             away_predicted = 0
@@ -291,7 +324,7 @@ try:
             insert_values = (away_team, away_predicted,
                              home_team, home_predicted, favored_team)
             cur.execute(insert_command, insert_values)
-            ####################################
+
             matchups.append(head_to_head)
             head_to_head = []
 
@@ -313,7 +346,6 @@ try:
                 fav_team = team_name
                 avg_minus_spread = predictions[team_name]["avgMinusSpread"]
                 favored_by = abs(predictions[team_name]["favoredBy"])
-                #################
                 insert_command = 'UPDATE nfl_week_10 SET vegas_line = (%s) WHERE home_team = (%s) OR away_team = (%s)'
                 insert_value = (favored_by, fav_team, fav_team)
                 cur.execute(insert_command, insert_value)
@@ -322,17 +354,12 @@ try:
                 dog_avg = predictions[team_name]["average"]
         pick = ""
         if avg_minus_spread == dog_avg:
-            print("PUSH " + fav_team + " vs " + dog_team)
-            pick = "PUSH " + fav_team + " vs " + dog_team
+            pick = f"PUSH {fav_team} vs {dog_team}"
         elif avg_minus_spread > dog_avg:
-            print("Pick " + fav_team + " -" + str(favored_by))
-            pick = "Pick " + fav_team + " -" + str(favored_by)
+            pick = f"Pick {fav_team} -{str(favored_by)}"
         else:
-            print("Pick " + dog_team + " +" + str(favored_by))
-            pick = "Pick " + dog_team + " +" + str(favored_by)
-        #####
-        # try adding where home or away team = fav_team
-        #####
+            pick = f"Pick {dog_team} +{str(favored_by)}"
+        print(pick)
         insert_command = 'UPDATE nfl_week_10 SET pick = (%s) WHERE home_team = (%s) OR away_team = (%s)'
         insert_value = (pick, fav_team, fav_team)
         cur.execute(insert_command, insert_value)
