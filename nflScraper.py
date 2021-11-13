@@ -1,9 +1,19 @@
+from posix import environ
 from selenium import webdriver
 import time
 import re
 import teamDict
 import json
 from pyfiglet import Figlet
+import psycopg2
+import os
+
+host = os.environ.get('nfl_scraper_hostname')
+database = os.environ.get('nfl_scraper_database')
+user = os.environ.get('nfl_scraper_username')
+password = os.environ.get('nfl_scraper_password')
+port = os.environ.get('nfl_scraper_port')
+
 
 figlet = Figlet(font='smslant')
 print(figlet.renderText("Loading..."))
@@ -71,20 +81,31 @@ driver.get('https://www.predictem.com/nfl/nfl-football-computer-picks-simulated-
 predictEm_predictions = driver.find_element_by_class_name('et_pb_text_inner')
 predictEm_all_text = predictEm_predictions.text.split('\n')
 
+<<<<<<< HEAD
 
 # predictEm_all_text = predictEm_all_text.split('\n')
 # print(predictEm_all_text)
+=======
+>>>>>>> main
 dividing_index_from_prev_scores = 0
 for i in predictEm_all_text:
     if i.endswith("Computer Picks"):
         break
     else:
         dividing_index_from_prev_scores += 1
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 this_weeks_games_only = predictEm_all_text[:dividing_index_from_prev_scores]
 current_week_matchups = ('\n').join(this_weeks_games_only)
 
 predictEm_individual_team_prediction = re.findall(
     '(?<=\d{3}: ).+', current_week_matchups)
+<<<<<<< HEAD
+=======
+predictEm_all_text = predictEm_predictions.text
+>>>>>>> main
 
 predictEm_formatted_data = []
 for i in range(0, len(predictEm_individual_team_prediction)):
@@ -227,45 +248,105 @@ time.sleep(3)
 
 nfl_com_schedule = driver.find_element_by_id("main-content")
 nfl_com_sched = nfl_com_schedule.text.split('\n')
+############################ WRITE TO DB ###########################################
+try:
+    conn = psycopg2.connect(
+        host=host,
+        database=database,
+        user=user,
+        password=password,
+        port=port
+    )
+    cur = conn.cursor()
 
-matchups = []
-head_to_head = []
-for i in nfl_com_sched:
-    if i in predictions:
-        head_to_head.append({i: predictions[i]})
-    if i == "Washington":
-        head_to_head.append({"Team": predictions["Team"]})
-    if len(head_to_head) == 2:
-        matchups.append(head_to_head)
-        head_to_head = []
+    matchups = []
+    head_to_head = []
+    for i in nfl_com_sched:
+        if i in predictions:
+            head_to_head.append({i: predictions[i]})
+        if i == "Washington":
+            head_to_head.append({"Team": predictions["Team"]})
+        if len(head_to_head) == 2:
+            ####################################
+            # write away and home teams plus score to db here
+            away_team = list(head_to_head[0])[0]
+            home_team = list(head_to_head[1])[0]
+            away_predicted = 0
+            home_predicted = 0
+            favored_team = ""
 
-print(figlet.renderText("Raw Data"))
-print(json.dumps(matchups, indent=4))
-print(figlet.renderText("Picks"))
+            if "avgMinusSpread" in predictions[away_team]:
+                away_predicted = predictions[away_team]["avgMinusSpread"]
+                favored_team = away_team
+            else:
+                away_predicted = predictions[away_team]["average"]
+
+            if "avgMinusSpread" in predictions[home_team]:
+                home_predicted = predictions[home_team]["avgMinusSpread"]
+                favored_team = home_team
+            else:
+                home_predicted = predictions[home_team]["average"]
+
+            insert_command = 'INSERT INTO nfl_week_10 (away_team, away_predicted, home_team, home_predicted, favored_team) VALUES (%s, %s, %s, %s, %s)'
+            insert_values = (away_team, away_predicted,
+                             home_team, home_predicted, favored_team)
+            cur.execute(insert_command, insert_values)
+            ####################################
+            matchups.append(head_to_head)
+            head_to_head = []
+
+    print(figlet.renderText("Raw Data"))
+    print(json.dumps(matchups, indent=4))
+    print(figlet.renderText("Picks"))
+
 
 ################### PRINT OUT FINAL PICKS ###################
-for matchup in matchups:
-    fav_team = ""
-    avg_minus_spread = 0
-    favored_by = 0
-    dog_team = ""
-    dog_avg = 0
-    for team in matchup:
-        team_name = list(team)[0]
-        if "avgMinusSpread" in predictions[team_name]:
-            fav_team = team_name
-            avg_minus_spread = predictions[team_name]["avgMinusSpread"]
-            favored_by = abs(predictions[team_name]["favoredBy"])
+    for matchup in matchups:
+        fav_team = ""
+        avg_minus_spread = 0
+        favored_by = 0
+        dog_team = ""
+        dog_avg = 0
+        for team in matchup:
+            team_name = list(team)[0]
+            if "avgMinusSpread" in predictions[team_name]:
+                fav_team = team_name
+                avg_minus_spread = predictions[team_name]["avgMinusSpread"]
+                favored_by = abs(predictions[team_name]["favoredBy"])
+                #################
+                insert_command = 'UPDATE nfl_week_10 SET vegas_line = (%s) WHERE home_team = (%s) OR away_team = (%s)'
+                insert_value = (favored_by, fav_team, fav_team)
+                cur.execute(insert_command, insert_value)
+            else:
+                dog_team = team_name
+                dog_avg = predictions[team_name]["average"]
+        pick = ""
+        if avg_minus_spread == dog_avg:
+            print("PUSH " + fav_team + " vs " + dog_team)
+            pick = "PUSH " + fav_team + " vs " + dog_team
+        elif avg_minus_spread > dog_avg:
+            print("Pick " + fav_team + " -" + str(favored_by))
+            pick = "Pick " + fav_team + " -" + str(favored_by)
         else:
-            dog_team = team_name
-            dog_avg = predictions[team_name]["average"]
-    if avg_minus_spread == dog_avg:
-        print("PUSH " + fav_team + " vs " + dog_team)
-    elif avg_minus_spread > dog_avg:
-        print("Pick " + fav_team + " -" + str(favored_by))
-    else:
-        print("Pick " + dog_team + " +" + str(favored_by))
+            print("Pick " + dog_team + " +" + str(favored_by))
+            pick = "Pick " + dog_team + " +" + str(favored_by)
+        #####
+        # try adding where home or away team = fav_team
+        #####
+        insert_command = 'UPDATE nfl_week_10 SET pick = (%s) WHERE home_team = (%s) OR away_team = (%s)'
+        insert_value = (pick, fav_team, fav_team)
+        cur.execute(insert_command, insert_value)
 
+    conn.commit()
+except Exception as error:
+    print(error)
+finally:
+    if cur is not None:
+        print('cursor was open')
+        cur.close()
+    if conn is not None:
+        print('connection was successful')
+        conn.close()
 
 time.sleep(7)
 driver.quit()

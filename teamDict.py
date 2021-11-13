@@ -121,7 +121,7 @@ lookup = [
     {
         "code": "OAK",
         "name": "Raiders",
-        "full_name": "Oakland Raiders",
+        "full_name": "Las Vegas Raiders",
         "alt": "Las vegas"
     },
     {
