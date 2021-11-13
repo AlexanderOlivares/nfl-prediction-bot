@@ -283,9 +283,9 @@ try:
             matchups.append(head_to_head)
             head_to_head = []
 
-        print(figlet.renderText("Raw Data"))
-        print(json.dumps(matchups, indent=4))
-        print(figlet.renderText("Picks"))
+    print(figlet.renderText("Raw Data"))
+    print(json.dumps(matchups, indent=4))
+    print(figlet.renderText("Picks"))
 
 
 ################### PRINT OUT FINAL PICKS ###################
@@ -302,8 +302,8 @@ try:
                 avg_minus_spread = predictions[team_name]["avgMinusSpread"]
                 favored_by = abs(predictions[team_name]["favoredBy"])
                 #################
-                insert_command = 'INSERT INTO nfl_week_10 (vegas_line) VALUES (%s)'
-                insert_value = (favored_by,)
+                insert_command = 'UPDATE nfl_week_10 SET vegas_line = (%s) WHERE home_team = (%s) OR away_team = (%s)'
+                insert_value = (favored_by, fav_team, fav_team)
                 cur.execute(insert_command, insert_value)
             else:
                 dog_team = team_name
@@ -321,8 +321,8 @@ try:
         #####
         # try adding where home or away team = fav_team
         #####
-        insert_command = 'INSERT INTO nfl_week_10 (pick) VALUES (%s)'
-        insert_value = (pick,)
+        insert_command = 'UPDATE nfl_week_10 SET pick = (%s) WHERE home_team = (%s) OR away_team = (%s)'
+        insert_value = (pick, fav_team, fav_team)
         cur.execute(insert_command, insert_value)
 
     conn.commit()
