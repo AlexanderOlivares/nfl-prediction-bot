@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 import time
 import re
 import teamDict
@@ -7,13 +8,13 @@ from pyfiglet import Figlet
 import psycopg2
 import os
 
-options = webdriver.ChromeOptions()
-options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-options.add_argument = ("--headless")
-options.add_argument = ("--disable-dev-shm-usage")
-options.add_argument = ("--no-sandbox")
-driver = webdriver.Chrome(executable_path=os.environ.get(
-    "CHROMEDRIVER_PATH"), options=options)
+chrome_options = Options()
+chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+chrome_options.add_argument = ("--no-sandbox")
+chrome_options.add_argument = ("--headless")
+chrome_options.add_argument = ("--disable-dev-shm-usage")
+driver = webdriver.Chrome(executable_path=os.environ[
+    "CHROMEDRIVER_PATH"], options=chrome_options)
 
 
 figlet = Figlet(font='smslant')
@@ -38,7 +39,6 @@ dRating_team_names = dRatings_game_table.find_elements_by_class_name(
 ###############################################################################
 # washington football team is going to labled just as "Team"
 ###############################################################################
-
 drating_team_name_list = []
 for i in dRating_team_names:
     teams = re.findall('\w+(?= \(\d+-\d+\))', i.text)
@@ -293,13 +293,20 @@ nfl_com_sched = nfl_com_schedule.text.split('\n')
 ###############################################################################
 # WRITE TO DB
 ###############################################################################
+
+host = os.environ['HOST']
+database = os.environ['DATABASE']
+user = os.environ['USER']
+password = os.environ['PASSWORD']
+port = os.environ['PORT']
+
 try:
     conn = psycopg2.connect(
-        host=HOST,
-        database=DATABASE,
-        user=USER,
+        host=host,
+        database=database,
+        user=user,
         password=password,
-        port=PORT
+        port=port
     )
     cur = conn.cursor()
 
