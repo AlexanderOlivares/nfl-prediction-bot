@@ -7,11 +7,14 @@ from pyfiglet import Figlet
 import psycopg2
 import os
 
-host = os.environ.get('nfl_scraper_hostname')
-database = os.environ.get('nfl_scraper_database')
-user = os.environ.get('nfl_scraper_username')
-password = os.environ.get('nfl_scraper_password')
-port = os.environ.get('nfl_scraper_port')
+chrome_options = webdriver.ChromeOptions()
+chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+chrome_options.add_argument = ("--headless")
+chrome_options.add_argument = ("--disable-dev-shm-usage")
+chrome_options.add_argument = ("--no-sandbox")
+driver = webdriver.Chrome(executable_path=os.environ.get(
+    "CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+
 
 figlet = Figlet(font='smslant')
 print(figlet.renderText("Loading..."))
