@@ -379,9 +379,9 @@ try:
         if avg_minus_spread == dog_avg:
             pick = f"PUSH {fav_team} vs {dog_team}"
         elif avg_minus_spread > dog_avg:
-            pick = f"Pick {fav_team} -{str(favored_by)}"
+            pick = f"{fav_team} -{str(favored_by)}"
         else:
-            pick = f"Pick {dog_team} +{str(favored_by)}"
+            pick = f"{dog_team} +{str(favored_by)}"
         print(pick)
         insert_command = f'UPDATE nfl{week_of_season} SET pick = (%s) WHERE home_team = (%s) OR away_team = (%s)'
         insert_value = (pick, fav_team, fav_team)
