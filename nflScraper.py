@@ -17,6 +17,7 @@ figlet = Figlet(font='smslant')
 print(figlet.renderText("Loading..."))
 
 team_lookup = teamDict.lookup
+week_of_season = "_"
 
 ###############################################################################
 # DRATINGS BELOW
@@ -153,8 +154,6 @@ predictEm_formatted_data = make_lowercase_and_number(predictEm_formatted_data)
 
 print(figlet.renderText("predictEm Scores"))
 print(predictEm_formatted_data)
-print('---------------------------')
-
 
 for i in predictEm_formatted_data:
     location_regex = r'(?i){0}'.format(i[0])
@@ -182,9 +181,16 @@ for i in predictEm_formatted_data:
 driver.execute_script("window.open('');")
 driver.switch_to.window(driver.window_handles[2])
 driver.get('https://www.oddsshark.com/nfl/scores')
-
-
 time.sleep(3)
+
+###############################################################################
+# get the current week of the season to add data in to correct table
+###############################################################################
+oddShark_get_week = driver.find_element_by_class_name('button__subtitle')
+week_of_season += '_'.join(oddShark_get_week.text.split(' '))
+print(week_of_season)
+
+
 oddShark_scoreboard = driver.find_element_by_class_name('scoreboard')
 oddShark_all_text = oddShark_scoreboard.text.split('\n')
 
@@ -294,6 +300,23 @@ try:
     )
     cur = conn.cursor()
 
+    create_table = (
+        f"""
+        CREATE TABLE nfl{week_of_season}(
+        away_team VARCHAR(255),
+        away_predicted decimal,
+        home_team VARCHAR(255),
+        home_predicted decimal,
+        vegas_line numeric,
+        favored_team VARCHAR(255),
+        pick VARCHAR(255)
+        )
+        """
+    )
+
+    cur.execute(create_table)
+    conn.commit()
+
     matchups = []
     head_to_head = []
     for i in nfl_com_sched:
@@ -320,7 +343,7 @@ try:
             else:
                 home_predicted = predictions[home_team]["average"]
 
-            insert_command = 'INSERT INTO nfl_week_10 (away_team, away_predicted, home_team, home_predicted, favored_team) VALUES (%s, %s, %s, %s, %s)'
+            insert_command = f'INSERT INTO nfl{week_of_season} (away_team, away_predicted, home_team, home_predicted, favored_team) VALUES (%s, %s, %s, %s, %s)'
             insert_values = (away_team, away_predicted,
                              home_team, home_predicted, favored_team)
             cur.execute(insert_command, insert_values)
@@ -346,7 +369,7 @@ try:
                 fav_team = team_name
                 avg_minus_spread = predictions[team_name]["avgMinusSpread"]
                 favored_by = abs(predictions[team_name]["favoredBy"])
-                insert_command = 'UPDATE nfl_week_10 SET vegas_line = (%s) WHERE home_team = (%s) OR away_team = (%s)'
+                insert_command = f'UPDATE nfl{week_of_season} SET vegas_line = (%s) WHERE home_team = (%s) OR away_team = (%s)'
                 insert_value = (favored_by, fav_team, fav_team)
                 cur.execute(insert_command, insert_value)
             else:
@@ -360,7 +383,7 @@ try:
         else:
             pick = f"Pick {dog_team} +{str(favored_by)}"
         print(pick)
-        insert_command = 'UPDATE nfl_week_10 SET pick = (%s) WHERE home_team = (%s) OR away_team = (%s)'
+        insert_command = f'UPDATE nfl{week_of_season} SET pick = (%s) WHERE home_team = (%s) OR away_team = (%s)'
         insert_value = (pick, fav_team, fav_team)
         cur.execute(insert_command, insert_value)
 
