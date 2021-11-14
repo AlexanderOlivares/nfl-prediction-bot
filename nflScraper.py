@@ -295,11 +295,11 @@ nfl_com_sched = nfl_com_schedule.text.split('\n')
 ###############################################################################
 try:
     conn = psycopg2.connect(
-        host=host,
-        database=database,
-        user=user,
+        host=HOST,
+        database=DATABASE,
+        user=USER,
         password=password,
-        port=port
+        port=PORT
     )
     cur = conn.cursor()
 
