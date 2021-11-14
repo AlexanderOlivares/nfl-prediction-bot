@@ -10,8 +10,8 @@ import os
 
 chrome_options = Options()
 chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-chrome_options.add_argument = ("--no-sandbox")
 chrome_options.add_argument = ("--headless")
+chrome_options.add_argument = ("--no-sandbox")
 chrome_options.add_argument = ("--disable-dev-shm-usage")
 driver = webdriver.Chrome(executable_path=os.environ[
     "CHROMEDRIVER_PATH"], options=chrome_options)
@@ -26,8 +26,8 @@ week_of_season = "_"
 ###############################################################################
 # DRATINGS BELOW
 ###############################################################################
-driver = webdriver.Chrome(
-    '/Users/alexolivares/Desktop/items/automate/chromedriver')
+# driver = webdriver.Chrome(
+#     '/Users/alexolivares/Desktop/items/automate/chromedriver')
 
 driver.get('https://www.dratings.com/predictor/nfl-football-predictions/')
 
