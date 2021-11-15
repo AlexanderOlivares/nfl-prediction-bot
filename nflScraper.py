@@ -8,16 +8,15 @@ from pyfiglet import Figlet
 import psycopg2
 import os
 
-print(os.environ['TEST'])
 chrome_options = Options()
-chrome_options.binary_location = os.environ["GOOGLE_CHROME_BIN"]
 chrome_options.add_argument = ("--no-sandbox")
 chrome_options.add_argument = ("--headless")
 chrome_options.add_argument = ("--disable-dev-shm-usage")
-# driver = webdriver.Chrome(executable_path=os.environ[
-#     "CHROMEDRIVER_PATH"], options=chrome_options)
-driver = webdriver.Chrome(
-    os.environ["CHROMEDRIVER_PATH"], options=chrome_options)
+chrome_options.binary_location = os.environ["GOOGLE_CHROME_BIN"]
+driver = webdriver.Chrome(executable_path=os.environ[
+    "CHROMEDRIVER_PATH"], chrome_options=chrome_options)
+# driver = webdriver.Chrome(
+#     os.environ["CHROMEDRIVER_PATH"], options=chrome_options)
 
 
 figlet = Figlet(font='smslant')
