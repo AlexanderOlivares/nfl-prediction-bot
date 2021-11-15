@@ -15,8 +15,11 @@ chrome_options.add_argument = ("--headless")
 chrome_options.add_argument = ("--disable-dev-shm-usage")
 chrome_options.add_argument = ("--remote-debugging-port=9222")
 chrome_options.add_argument = ('--disable-gpu')
+chrome_options.add_argument("start-maximized")
+chrome_options.add_argument("disable-infobars")
+chrome_options.add_argument("--disable-extensions")
 driver = webdriver.Chrome(executable_path=os.environ.get(
-    "CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+    "CHROMEDRIVER_PATH"), options=chrome_options)
 # driver = webdriver.Chrome(
 #     os.environ["CHROMEDRIVER_PATH"], options=chrome_options)
 
