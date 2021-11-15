@@ -13,16 +13,8 @@ chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-dev-shm-usage")
-# chrome_options.add_argument("--remote-debugging-port=9222")
-# chrome_options.add_argument('--disable-gpu')
-# chrome_options.add_argument("start-maximized")
-# chrome_options.add_argument("disable-infobars")
-# chrome_options.add_argument("--disable-extensions")
 driver = webdriver.Chrome(executable_path=os.environ.get(
     "CHROMEDRIVER_PATH"), options=chrome_options)
-# driver = webdriver.Chrome(
-#     os.environ["CHROMEDRIVER_PATH"], options=chrome_options)
-
 
 figlet = Figlet(font='smslant')
 print(figlet.renderText("Loading..."))
@@ -33,9 +25,6 @@ week_of_season = "_"
 ###############################################################################
 # DRATINGS BELOW
 ###############################################################################
-# driver = webdriver.Chrome(
-#     '/Users/alexolivares/Desktop/items/automate/chromedriver')
-
 driver.get('https://www.dratings.com/predictor/nfl-football-predictions/')
 
 dRatings_game_table = driver.find_element_by_class_name('table-body')
@@ -301,11 +290,11 @@ nfl_com_sched = nfl_com_schedule.text.split('\n')
 # WRITE TO DB
 ###############################################################################
 
-host = os.environ['HOST']
-database = os.environ['DATABASE']
-user = os.environ['USER']
-password = os.environ['PASSWORD']
-port = os.environ['PORT']
+host = os.environ.get('HOST')
+database = os.environ.get('DATABASE')
+user = os.environ.get('USER')
+password = os.environ.get('PASSWORD')
+port = os.environ.get('PORT')
 
 try:
     conn = psycopg2.connect(
