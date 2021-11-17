@@ -63,12 +63,13 @@ Final picks will display the team name of the predicted winner against the sprea
 Example:
 
 ```
+Picks
+-----------
 Cowboys -10
 Panthers +3
 ```
 
-Cowboys are predicted to win by more than 10
-Panthers predicted to win or lose by less than 3
+Above the Cowboys are predicted to win by more than 10 and the Panthers are predicted to win or lose by less than 3
 
 #### Technologies Used
 
