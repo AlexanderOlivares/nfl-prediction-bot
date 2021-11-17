@@ -7,7 +7,11 @@ import json
 from pyfiglet import Figlet
 import psycopg2
 import os
+from datetime import datetime
 
+###############################################################################
+# CHROMEDRIVER CONFIG FOR HEROKU
+###############################################################################
 chrome_options = Options()
 chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 chrome_options.add_argument("--no-sandbox")
@@ -58,25 +62,17 @@ for i in range(0, len(drating_team_name_list)):
     dratings_formatted_data.append(
         [drating_team_name_list[i], dratings_predicted_scores[i]])
 
-predictions = {
-    "Team": {
-        "dRatings": 1
-    }
-}
-
-for i in dratings_formatted_data:
-    predictions[i[0]] = {
-        "dRatings": i[1]
-    }
-
-print(figlet.renderText("dRatings Scores"))
-print(dratings_formatted_data)
 
 ###############################################################################
-# If only thursday game is showing there will only be 2 teams in dratings_formatted_data
-# open next page for to get all the sunday/monday games
+# dRatings displays games by day. So only thur games are visibible thur and you
+# must hit the link below to view upcoming games.
+# If only thursday or monday night game is displayed there will only be 2 teams
+# in dratings_formatted_data list (len of 2) So we open next page to get all
+# the sunday games. This can also happen if it's monday (will be the only game)
+# so we do a day of week check before proceeding. Monday = 1 in this context
 ###############################################################################
-if len(dratings_formatted_data) == 2:
+today_day_of_week = datetime.today().isoweekday()
+if len(dratings_formatted_data) == 2 and today_day_of_week != 1:
     driver.get(
         'https://www.dratings.com/predictor/nfl-football-predictions/upcoming/4#scroll-upcoming')
 
@@ -97,17 +93,23 @@ if len(dratings_formatted_data) == 2:
                 if not i.endswith('%'):
                     dratings_predicted_scores.append(float(i))
 
-    dratings_formatted_data = []
-
     for i in range(0, len(drating_team_name_list)):
         dratings_formatted_data.append(
             [drating_team_name_list[i], dratings_predicted_scores[i]])
 
-    for i in dratings_formatted_data:
-        predictions[i[0]] = {
-            "dRatings": i[1]
-        }
+predictions = {
+    "Team": {
+        "dRatings": 1
+    }
+}
 
+for i in dratings_formatted_data:
+    predictions[i[0]] = {
+        "dRatings": i[1]
+    }
+
+print(figlet.renderText("dRatings Scores"))
+print(dratings_formatted_data)
 
 ###############################################################################
 # PREDICTEM BELOW
@@ -168,11 +170,6 @@ for i in predictEm_formatted_data:
         elif "alt" in j:
             if j["name"] in predictions:
                 predictions[j["name"]]["predictEm"] = i[1]
-            else:
-                predictions[j["name"]] = {
-                    "predictEm": i[1]
-                }
-
 
 ###############################################################################
 # ODD SHARK BELOW
@@ -205,7 +202,6 @@ for i in range(0, len(oddShark_regex_match_score_with_over_under)):
         oddShark_predcted_scores_only.append(
             oddShark_regex_match_score_with_over_under[i])
 
-
 nfl_team_lookup = ["Cardinals", "Falcons", "Ravens", "Bills", "Panthers", "Bears", "Bengals", "Browns", "Cowboys", "Broncos", "Lions", "Packers", "Texans", "Colts", "Jaguars", "Chiefs",
                    "Raiders", "Chargers", "Rams", "Dolphins", "Vikings", "Patriots", "Saints", "Giants", "Jets", "Eagles", "Steelers", "49ers", "Seahawks", "Buccaneers", "Titans", "Football Team"]
 
@@ -236,7 +232,6 @@ for i in oddShark_formatted_data:
             "oddShark": i[1]
         }
 
-
 for key in predictions:
     dict = predictions[key]
     total = 0
@@ -246,7 +241,6 @@ for key in predictions:
         total_predictions += 1
     average = round(total / total_predictions, 1)
     predictions[key]["average"] = average
-
 
 ###############################################################################
 # GET VEGAS LINES FROM ESPN
@@ -270,7 +264,6 @@ for i in espn_com:
                 predictions[fav]["favoredBy"] = line
                 predictions[fav]["avgMinusSpread"] = round(
                     predictions[fav]["average"] + line, 1)
-
 
 ###############################################################################
 # ORDER PREDICTIONS BY CURRENT WEEKLY MATCHUP
@@ -361,7 +354,6 @@ try:
     print(json.dumps(matchups, indent=4))
     print(figlet.renderText("Picks"))
 
-
 ################### PRINT OUT FINAL PICKS ###################
     for matchup in matchups:
         fav_team = ""
@@ -404,5 +396,4 @@ finally:
         print('connection was successful')
         conn.close()
 
-time.sleep(7)
 driver.quit()

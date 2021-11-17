@@ -135,9 +135,9 @@ lookup = [
         "full_name": "Pittsburgh Steelers"
     },
     {
-        "code": "SD",
+        "code": "LAC",
         "name": "Chargers",
-        "full_name": "San Diego Chargers",
+        "full_name": "Los Angeles Chargers",
         "alt": "La chargers",
     },
     {
