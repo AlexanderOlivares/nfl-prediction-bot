@@ -137,7 +137,7 @@ lookup = [
     {
         "code": "SD",
         "name": "Chargers",
-        "full_name": "San Diego Chargers",
+        "full_name": "Los Angeles Chargers",
         "alt": "La chargers",
     },
     {

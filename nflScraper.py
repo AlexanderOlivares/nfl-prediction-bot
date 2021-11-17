@@ -4,6 +4,7 @@ import re
 import teamDict
 import json
 from pyfiglet import Figlet
+from datetime import datetime
 
 figlet = Figlet(font='smslant')
 print(figlet.renderText("Loading..."))
@@ -50,23 +51,13 @@ for i in range(0, len(drating_team_name_list)):
     dratings_formatted_data.append(
         [drating_team_name_list[i], dratings_predicted_scores[i]])
 
-predictions = {
-    "Team": {
-        "dRatings": 1
-    }
-}
-
-for i in dratings_formatted_data:
-    predictions[i[0]] = {
-        "dRatings": i[1]
-    }
-
 
 ###############################################################################
 # If only thursday game is showing there will only be 2 teams in dratings_formatted_data
 # open next page for to get all the sunday/monday games
 ###############################################################################
-if len(dratings_formatted_data) == 2:
+today_day_of_week = datetime.today().isoweekday()
+if len(dratings_formatted_data) == 2 and today_day_of_week != 1:
     driver.get(
         'https://www.dratings.com/predictor/nfl-football-predictions/upcoming/4#scroll-upcoming')
 
@@ -92,21 +83,29 @@ if len(dratings_formatted_data) == 2:
                 if not i.endswith('%'):
                     dratings_predicted_scores.append(float(i))
 
-    # dratings_formatted_data = []
-
     for i in range(0, len(drating_team_name_list)):
         dratings_formatted_data.append(
             [drating_team_name_list[i], dratings_predicted_scores[i]])
 
-    for i in dratings_formatted_data:
-        predictions[i[0]] = {
-            "dRatings": i[1]
-        }
+    # for i in dratings_formatted_data:
+    #     predictions[i[0]] = {
+    #         "dRatings": i[1]
+    #     }
 
+
+predictions = {
+    "Team": {
+        "dRatings": 1
+    }
+}
+
+for i in dratings_formatted_data:
+    predictions[i[0]] = {
+        "dRatings": i[1]
+    }
 
 print(figlet.renderText("dRatings Scores"))
 print(dratings_formatted_data)
-
 ###############################################################################
 # PREDICTEM BELOW
 ###############################################################################
@@ -166,10 +165,6 @@ for i in predictEm_formatted_data:
         elif "alt" in j:
             if j["name"] in predictions:
                 predictions[j["name"]]["predictEm"] = i[1]
-            else:
-                predictions[j["name"]] = {
-                    "predictEm": i[1]
-                }
 
 
 ###############################################################################
@@ -271,11 +266,13 @@ driver.get('https://www.nfl.com/schedules/')
 # sub week number after reg for specific week
 # driver.get('https://www.nfl.com/schedules/2021/REG9/')
 
-time.sleep(3)
+time.sleep(6)
 
 nfl_com_schedule = driver.find_element_by_id("main-content")
 nfl_com_sched = nfl_com_schedule.text.split('\n')
-
+print('-----------------------')
+print(nfl_com_sched)
+print('-----------------------')
 
 matchups = []
 head_to_head = []
@@ -285,21 +282,6 @@ for i in nfl_com_sched:
     if i == "Washington":
         head_to_head.append({"Team": predictions["Team"]})
     if len(head_to_head) == 2:
-        away_team = list(head_to_head[0])[0]
-        home_team = list(head_to_head[1])[0]
-        away_predicted = 0
-        home_predicted = 0
-        favored_team = ""
-        if "avgMinusSpread" in predictions[away_team]:
-            away_predicted = predictions[away_team]["avgMinusSpread"]
-            favored_team = away_team
-        else:
-            away_predicted = predictions[away_team]["average"]
-        if "avgMinusSpread" in predictions[home_team]:
-            home_predicted = predictions[home_team]["avgMinusSpread"]
-            favored_team = home_team
-        else:
-            home_predicted = predictions[home_team]["average"]
         matchups.append(head_to_head)
         head_to_head = []
 
@@ -336,5 +318,4 @@ for matchup in matchups:
     print(pick)
 
 
-time.sleep(7)
 driver.quit()
