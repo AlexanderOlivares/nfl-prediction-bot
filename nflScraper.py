@@ -68,30 +68,24 @@ if len(dratings_formatted_data) == 2 and today_day_of_week != 1:
 
     drating_team_name_list = []
     for i in dRating_team_names:
-        teams = re.findall('\w+(?= \(\d+-\d+\))', i.text)
+        teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
         for i in teams:
             drating_team_name_list.append(i)
 
     dratings_percentages_and_points = dRatings_game_table.find_elements_by_class_name(
         'table-division')
 
-    dratings_predicted_scores = []
+    dratings_predicted__sunday_scores = []
     for i in dratings_percentages_and_points:
         data_list = i.text.split('\n')
         if len(data_list) > 1:
             for i in data_list:
                 if not i.endswith('%'):
-                    dratings_predicted_scores.append(float(i))
+                    dratings_predicted__sunday_scores.append(float(i))
 
     for i in range(0, len(drating_team_name_list)):
         dratings_formatted_data.append(
-            [drating_team_name_list[i], dratings_predicted_scores[i]])
-
-    # for i in dratings_formatted_data:
-    #     predictions[i[0]] = {
-    #         "dRatings": i[1]
-    #     }
-
+            [drating_team_name_list[i], dratings_predicted__sunday_scores[i]])
 
 predictions = {
     "Team": {
