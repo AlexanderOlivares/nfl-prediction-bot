@@ -50,8 +50,7 @@ dRating_team_names = dRatings_game_table.find_elements_by_class_name(
 ###############################################################################
 drating_team_name_list = []
 for i in dRating_team_names:
-    teams = re.findall('\w+(?= \(\d+-\d+\))', i.text)
-    # teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
+    teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
     for i in teams:
         drating_team_name_list.append(i)
 
@@ -96,8 +95,7 @@ if len(dratings_formatted_data) == 2 and today_day_of_week != 1:
 
     drating_team_name_list = []
     for i in dRating_team_names:
-        teams = re.findall('\w+(?= \(\d+-\d+\))', i.text)
-        # teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
+        teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
         for i in teams:
             drating_team_name_list.append(i)
 
