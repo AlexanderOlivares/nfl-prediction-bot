@@ -302,21 +302,9 @@ nfl_com_sched = nfl_com_schedule.text.split('\n')
 # WRITE TO DB
 ###############################################################################
 
-host = os.environ.get('HOST')
-database = os.environ.get('DATABASE')
-user = os.environ.get('USER')
-password = os.environ.get('PASSWORD')
-port = os.environ.get('PORT')
 db_Url = os.environ.get('DATABASE_URL')
 
 try:
-    # conn = psycopg2.connect(
-    #     host=host,
-    #     database=database,
-    #     user=user,
-    #     password=password,
-    #     port=port,
-    # )
     conn = psycopg2.connect(db_Url)
     cur = conn.cursor()
 
