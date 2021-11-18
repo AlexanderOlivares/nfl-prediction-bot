@@ -31,6 +31,8 @@ week_of_season = "_"
 ###############################################################################
 driver.get('https://www.dratings.com/predictor/nfl-football-predictions/')
 
+time.sleep(5)
+
 dRatings_game_table = driver.find_element_by_class_name('table-body')
 
 dRating_team_names = dRatings_game_table.find_elements_by_class_name(
@@ -41,7 +43,8 @@ dRating_team_names = dRatings_game_table.find_elements_by_class_name(
 ###############################################################################
 drating_team_name_list = []
 for i in dRating_team_names:
-    teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
+    teams = re.findall('\w+(?= \(\d+-\d+\))', i.text)
+    # teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
     for i in teams:
         drating_team_name_list.append(i)
 
@@ -63,6 +66,7 @@ for i in range(0, len(drating_team_name_list)):
         [drating_team_name_list[i], dratings_predicted_scores[i]])
 
 
+time.sleep(5)
 ###############################################################################
 # dRatings displays games by day. So only thur games are visibible thur and you
 # must hit the link below to view upcoming games.
@@ -76,10 +80,17 @@ if len(dratings_formatted_data) == 2 and today_day_of_week != 1:
     driver.get(
         'https://www.dratings.com/predictor/nfl-football-predictions/upcoming/4#scroll-upcoming')
 
+    time.sleep(5)
+
+    dRatings_game_table = driver.find_element_by_class_name('table-body')
+
+    dRating_team_names = dRatings_game_table.find_elements_by_class_name(
+        'ta--left.tf--body')
+
     drating_team_name_list = []
     for i in dRating_team_names:
-        # teams = re.findall('\w+(?= \(\d+-\d+\))', i.text)
-        teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
+        teams = re.findall('\w+(?= \(\d+-\d+\))', i.text)
+        # teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
         for i in teams:
             drating_team_name_list.append(i)
 
