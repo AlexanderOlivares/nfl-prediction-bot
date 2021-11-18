@@ -307,7 +307,7 @@ database = os.environ.get('DATABASE')
 user = os.environ.get('USER')
 password = os.environ.get('PASSWORD')
 port = os.environ.get('PORT')
-uri = os.environ.get('URI')
+databaseUrl = os.environ.get('DATABASE_URL')
 
 try:
     conn = psycopg2.connect(
@@ -316,7 +316,7 @@ try:
         user=user,
         password=password,
         port=port,
-        uri=uri
+        databaseUrl=databaseUrl
     )
     cur = conn.cursor()
 
