@@ -277,6 +277,8 @@ for i in espn_com:
         if (len(line_list) == 1):
             line = float(line_list[0])
             fav = full_team_name.split(' ')[-1]
+            if fav == "Washington":
+                fav = "Team"
             if line < 0:
                 predictions[fav]["favoredBy"] = line
                 predictions[fav]["avgMinusSpread"] = round(
