@@ -82,7 +82,7 @@ time.sleep(5)
 # so we do a day of week check before proceeding. Monday = 1 in this context
 ###############################################################################
 today_day_of_week = datetime.today().isoweekday()
-if len(dratings_formatted_data) == 2 and today_day_of_week != 1:
+if len(dratings_formatted_data) < 8 and today_day_of_week != 1:
     driver.get(
         'https://www.dratings.com/predictor/nfl-football-predictions/upcoming/4#scroll-upcoming')
 
