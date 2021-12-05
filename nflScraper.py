@@ -131,69 +131,69 @@ print(dratings_formatted_data)
 ###############################################################################
 # PREDICTEM BELOW
 ###############################################################################
-driver.execute_script("window.open('');")
-driver.switch_to.window(driver.window_handles[1])
-driver.get('https://www.predictem.com/nfl/nfl-football-computer-picks-simulated-predictions-for-each-pro-football-game-every-week/')
+# driver.execute_script("window.open('');")
+# driver.switch_to.window(driver.window_handles[1])
+# driver.get('https://www.predictem.com/nfl/nfl-football-computer-picks-simulated-predictions-for-each-pro-football-game-every-week/')
 
-predictEm_predictions = driver.find_element_by_class_name('et_pb_text_inner')
-predictEm_all_text = predictEm_predictions.text.split('\n')
+# predictEm_predictions = driver.find_element_by_class_name('et_pb_text_inner')
+# predictEm_all_text = predictEm_predictions.text.split('\n')
 
-dividing_index_from_prev_scores = 0
-for i in predictEm_all_text:
-    # if i.endswith("Computer Picks") or i.endswith("Score Predictions") or i.endswith("Score Picks"):
-    if i.endswith("12 NFL Computer Score Picks"):
-        break
-    else:
-        dividing_index_from_prev_scores += 1
-this_weeks_games_only = predictEm_all_text[:dividing_index_from_prev_scores]
-current_week_matchups = ('\n').join(this_weeks_games_only)
+# dividing_index_from_prev_scores = 0
+# for i in predictEm_all_text:
+#     # if i.endswith("Computer Picks") or i.endswith("Score Predictions") or i.endswith("Score Picks"):
+#     if i.endswith("12 NFL Computer Score Picks"):
+#         break
+#     else:
+#         dividing_index_from_prev_scores += 1
+# this_weeks_games_only = predictEm_all_text[:dividing_index_from_prev_scores]
+# current_week_matchups = ('\n').join(this_weeks_games_only)
 
-predictEm_individual_team_prediction = re.findall(
-    '(?<=\d{3}: ).+', current_week_matchups)
-predictEm_all_text = predictEm_predictions.text
+# predictEm_individual_team_prediction = re.findall(
+#     '(?<=\d{3}: ).+', current_week_matchups)
+# predictEm_all_text = predictEm_predictions.text
 
-predictEm_formatted_data = []
-for i in range(0, len(predictEm_individual_team_prediction)):
-    predictEm_regex_split = "\s(?=\d+)"
-    predictEm_formatted_data.append(
-        re.split(predictEm_regex_split, predictEm_individual_team_prediction[i]))
-
-
-def make_lowercase_and_number(two_dim_list):
-    formatted = []
-    for i in two_dim_list:
-        lower_case_team_and_number_score = []
-        lower_case_team_and_number_score.append(i[0][0] + i[0][1:].lower())
-        lower_case_team_and_number_score.append(float(i[1]))
-        formatted.append(lower_case_team_and_number_score)
-    return formatted
+# predictEm_formatted_data = []
+# for i in range(0, len(predictEm_individual_team_prediction)):
+#     predictEm_regex_split = "\s(?=\d+)"
+#     predictEm_formatted_data.append(
+#         re.split(predictEm_regex_split, predictEm_individual_team_prediction[i]))
 
 
-predictEm_formatted_data = make_lowercase_and_number(predictEm_formatted_data)
+# def make_lowercase_and_number(two_dim_list):
+#     formatted = []
+#     for i in two_dim_list:
+#         lower_case_team_and_number_score = []
+#         lower_case_team_and_number_score.append(i[0][0] + i[0][1:].lower())
+#         lower_case_team_and_number_score.append(float(i[1]))
+#         formatted.append(lower_case_team_and_number_score)
+#     return formatted
 
-print(figlet.renderText("predictEm Scores"))
-print(predictEm_formatted_data)
 
-for i in predictEm_formatted_data:
-    location_regex = r'(?i){0}'.format(i[0])
-    for j in team_lookup:
-        full_name_found = re.findall(location_regex, j["full_name"])
-        if full_name_found:
-            if j["name"] in predictions:
-                predictions[j["name"]]["predictEm"] = i[1]
-            else:
-                predictions[j["name"]] = {
-                    "predictEm": i[1]
-                }
-        elif "alt" in j:
-            if j["name"] in predictions:
-                predictions[j["name"]]["predictEm"] = i[1]
+# predictEm_formatted_data = make_lowercase_and_number(predictEm_formatted_data)
+
+# print(figlet.renderText("predictEm Scores"))
+# print(predictEm_formatted_data)
+
+# for i in predictEm_formatted_data:
+#     location_regex = r'(?i){0}'.format(i[0])
+#     for j in team_lookup:
+#         full_name_found = re.findall(location_regex, j["full_name"])
+#         if full_name_found:
+#             if j["name"] in predictions:
+#                 predictions[j["name"]]["predictEm"] = i[1]
+#             else:
+#                 predictions[j["name"]] = {
+#                     "predictEm": i[1]
+#                 }
+#         elif "alt" in j:
+#             if j["name"] in predictions:
+#                 predictions[j["name"]]["predictEm"] = i[1]
 
 ###############################################################################
 # ODD SHARK BELOW
 ###############################################################################
 driver.execute_script("window.open('');")
-driver.switch_to.window(driver.window_handles[2])
+driver.switch_to.window(driver.window_handles[1])
 driver.get('https://www.oddsshark.com/nfl/scores')
 time.sleep(3)
 
@@ -264,7 +264,7 @@ for key in predictions:
 # GET VEGAS LINES FROM ESPN
 ###############################################################################
 driver.execute_script("window.open('');")
-driver.switch_to.window(driver.window_handles[3])
+driver.switch_to.window(driver.window_handles[2])
 driver.get('https://www.espn.com/nfl/lines')
 
 espn_com = driver.find_elements_by_class_name('Table__TR')
@@ -289,7 +289,7 @@ for i in espn_com:
 # ORDER PREDICTIONS BY CURRENT WEEKLY MATCHUP
 ###############################################################################
 driver.execute_script("window.open('');")
-driver.switch_to.window(driver.window_handles[4])
+driver.switch_to.window(driver.window_handles[3])
 driver.get('https://www.nfl.com/schedules/')
 # sub week number after reg for specific week
 # driver.get('https://www.nfl.com/schedules/2021/REG9/')
