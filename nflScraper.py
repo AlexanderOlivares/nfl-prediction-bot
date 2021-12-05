@@ -36,98 +36,98 @@ week_of_season = "_"
 ###############################################################################
 # DRATINGS BELOW
 ###############################################################################
-driver.get('https://www.dratings.com/predictor/nfl-football-predictions/')
+# driver.get('https://www.dratings.com/predictor/nfl-football-predictions/')
 
-time.sleep(5)
+# time.sleep(5)
 
-dRatings_game_table = driver.find_element_by_class_name('table-body')
+# dRatings_game_table = driver.find_element_by_class_name('table-body')
 
-dRating_team_names = dRatings_game_table.find_elements_by_class_name(
-    'ta--left.tf--body')
+# dRating_team_names = dRatings_game_table.find_elements_by_class_name(
+#     'ta--left.tf--body')
 
-###############################################################################
-# washington football team is going to labled just as "Team"
-###############################################################################
-drating_team_name_list = []
-for i in dRating_team_names:
-    teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
-    for i in teams:
-        drating_team_name_list.append(i)
+# ###############################################################################
+# # washington football team is going to labled just as "Team"
+# ###############################################################################
+# drating_team_name_list = []
+# for i in dRating_team_names:
+#     teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
+#     for i in teams:
+#         drating_team_name_list.append(i)
 
-dratings_percentages_and_points = dRatings_game_table.find_elements_by_class_name(
-    'table-division')
+# dratings_percentages_and_points = dRatings_game_table.find_elements_by_class_name(
+#     'table-division')
 
-dratings_predicted_scores = []
-for i in dratings_percentages_and_points:
-    data_list = i.text.split('\n')
-    if len(data_list) > 1:
-        for i in data_list:
-            if not i.endswith('%'):
-                dratings_predicted_scores.append(float(i))
+# dratings_predicted_scores = []
+# for i in dratings_percentages_and_points:
+#     data_list = i.text.split('\n')
+#     if len(data_list) > 1:
+#         for i in data_list:
+#             if not i.endswith('%'):
+#                 dratings_predicted_scores.append(float(i))
 
-dratings_formatted_data = []
+# dratings_formatted_data = []
 
-for i in range(0, len(drating_team_name_list)):
-    dratings_formatted_data.append(
-        [drating_team_name_list[i], dratings_predicted_scores[i]])
+# for i in range(0, len(drating_team_name_list)):
+#     dratings_formatted_data.append(
+#         [drating_team_name_list[i], dratings_predicted_scores[i]])
 
 
-time.sleep(5)
-###############################################################################
-# dRatings displays games by day. So only thur games are visibible thur and you
-# must hit the link below to view upcoming games.
-# If only thursday or monday night game is displayed there will only be 2 teams
-# in dratings_formatted_data list (len of 2) So we open next page to get all
-# the sunday games. This can also happen if it's monday (will be the only game)
-# so we do a day of week check before proceeding. Monday = 1 in this context
-###############################################################################
-today_day_of_week = datetime.today().isoweekday()
-if len(dratings_formatted_data) == 2 and today_day_of_week != 1:
-    driver.get(
-        'https://www.dratings.com/predictor/nfl-football-predictions/upcoming/4#scroll-upcoming')
+# time.sleep(5)
+# ###############################################################################
+# # dRatings displays games by day. So only thur games are visibible thur and you
+# # must hit the link below to view upcoming games.
+# # If only thursday or monday night game is displayed there will only be 2 teams
+# # in dratings_formatted_data list (len of 2) So we open next page to get all
+# # the sunday games. This can also happen if it's monday (will be the only game)
+# # so we do a day of week check before proceeding. Monday = 1 in this context
+# ###############################################################################
+# today_day_of_week = datetime.today().isoweekday()
+# if len(dratings_formatted_data) == 2 and today_day_of_week != 1:
+#     driver.get(
+#         'https://www.dratings.com/predictor/nfl-football-predictions/upcoming/4#scroll-upcoming')
 
-    time.sleep(5)
+#     time.sleep(5)
 
-    dRatings_game_table = driver.find_element_by_class_name('table-body')
+#     dRatings_game_table = driver.find_element_by_class_name('table-body')
 
-    dRating_team_names = dRatings_game_table.find_elements_by_class_name(
-        'ta--left.tf--body')
+#     dRating_team_names = dRatings_game_table.find_elements_by_class_name(
+#         'ta--left.tf--body')
 
-    drating_team_name_list = []
-    for i in dRating_team_names:
-        teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
-        for i in teams:
-            drating_team_name_list.append(i)
+#     drating_team_name_list = []
+#     for i in dRating_team_names:
+#         teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
+#         for i in teams:
+#             drating_team_name_list.append(i)
 
-    dratings_percentages_and_points = dRatings_game_table.find_elements_by_class_name(
-        'table-division')
+#     dratings_percentages_and_points = dRatings_game_table.find_elements_by_class_name(
+#         'table-division')
 
-    dratings_predicted_scores = []
-    for i in dratings_percentages_and_points:
-        data_list = i.text.split('\n')
-        if len(data_list) > 1:
-            for i in data_list:
-                if not i.endswith('%'):
-                    dratings_predicted_scores.append(float(i))
+#     dratings_predicted_scores = []
+#     for i in dratings_percentages_and_points:
+#         data_list = i.text.split('\n')
+#         if len(data_list) > 1:
+#             for i in data_list:
+#                 if not i.endswith('%'):
+#                     dratings_predicted_scores.append(float(i))
 
-    for i in range(0, len(drating_team_name_list)):
-        dratings_formatted_data.append(
-            [drating_team_name_list[i], dratings_predicted_scores[i]])
+#     for i in range(0, len(drating_team_name_list)):
+#         dratings_formatted_data.append(
+#             [drating_team_name_list[i], dratings_predicted_scores[i]])
+
+
+# for i in dratings_formatted_data:
+#     predictions[i[0]] = {
+#         "dRatings": i[1]
+#     }
+
+# print(figlet.renderText("dRatings Scores"))
+# print(dratings_formatted_data)
 
 predictions = {
     "Team": {
-        "dRatings": 1
+        # "dRatings": 1
     }
 }
-
-for i in dratings_formatted_data:
-    predictions[i[0]] = {
-        "dRatings": i[1]
-    }
-
-print(figlet.renderText("dRatings Scores"))
-print(dratings_formatted_data)
-
 ###############################################################################
 # PREDICTEM BELOW
 ###############################################################################
