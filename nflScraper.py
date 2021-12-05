@@ -140,7 +140,8 @@ predictEm_all_text = predictEm_predictions.text.split('\n')
 
 dividing_index_from_prev_scores = 0
 for i in predictEm_all_text:
-    if i.endswith("Computer Picks") or i.endswith("Score Predictions") or i.endswith("Score Picks"):
+    # if i.endswith("Computer Picks") or i.endswith("Score Predictions") or i.endswith("Score Picks"):
+    if i.endswith("12 NFL Computer Score Picks"):
         break
     else:
         dividing_index_from_prev_scores += 1
