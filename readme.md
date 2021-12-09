@@ -10,19 +10,12 @@ To run on your computer clone the "scraper_only" branch
 git clone -b scraper_only --single-branch https://github.com/AlexanderOlivares/nfl-prediction-bot.git
 ```
 
-Additionally, install [pyfiglet](https://pypi.org/project/pyfiglet/0.7/)
-
-```
-pip install pyfiglet
-```
-
 #### Sites Scraped
 
 For Predictions
 
 - [OddShark](https://www.oddsshark.com/)
 - [dRatings](https://www.dratings.com/)
-- [PredictEm](https://www.predictem.com/)
 
 For Schedule and Vegas Lines
 
@@ -31,14 +24,13 @@ For Schedule and Vegas Lines
 
 #### Format of Raw Data Output
 
-Raw data is formatted as an array of objects. Each array item contains a current week NFL matchup. The favored team will have the additional properties of "favoredBy" and "avgMinusSpread" to provide betting odds context.
+Raw data is formatted as an list of dictionaries. Each list item contains a current week NFL matchup. The favored team will have the additional properties of "favoredBy" and "avgMinusSpread" to provide betting odds context.
 
 ```
 [
  	{
 		awayTeam: {
 			"dRatings": score,
-			"predictEm": score,
 			"oddShark": score,
 			"average": avg of three predicted scores
 			"favoredBy": -vegasLine,
@@ -48,7 +40,6 @@ Raw data is formatted as an array of objects. Each array item contains a current
  	{
 		homeTeam: {
 			"dRatings": score,
-			"predictEm": score,
 			"oddShark": score,
 			"average": avg of three predicted scores
 		}
