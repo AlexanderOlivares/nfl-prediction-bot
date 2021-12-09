@@ -32,169 +32,13 @@ print(figlet.renderText("Loading..."))
 
 team_lookup = teamDict.lookup
 week_of_season = "_"
-
-###############################################################################
-# DRATINGS BELOW
-###############################################################################
-# driver.get('https://www.dratings.com/predictor/nfl-football-predictions/')
-
-# time.sleep(5)
-
-# dRatings_game_table = driver.find_element_by_class_name('table-body')
-
-# dRating_team_names = dRatings_game_table.find_elements_by_class_name(
-#     'ta--left.tf--body')
-
-# ###############################################################################
-# # washington football team is going to labled just as "Team"
-# ###############################################################################
-# drating_team_name_list = []
-# for i in dRating_team_names:
-#     teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
-#     for i in teams:
-#         drating_team_name_list.append(i)
-
-# dratings_percentages_and_points = dRatings_game_table.find_elements_by_class_name(
-#     'table-division')
-
-# dratings_predicted_scores = []
-# for i in dratings_percentages_and_points:
-#     data_list = i.text.split('\n')
-#     if len(data_list) > 1:
-#         for i in data_list:
-#             if not i.endswith('%'):
-#                 dratings_predicted_scores.append(float(i))
-
-# dratings_formatted_data = []
-
-# for i in range(0, len(drating_team_name_list)):
-#     dratings_formatted_data.append(
-#         [drating_team_name_list[i], dratings_predicted_scores[i]])
-
-
-# time.sleep(5)
-# ###############################################################################
-# # dRatings displays games by day. So only thur games are visibible thur and you
-# # must hit the link below to view upcoming games.
-# # If only thursday or monday night game is displayed there will only be 2 teams
-# # in dratings_formatted_data list (len of 2) So we open next page to get all
-# # the sunday games. This can also happen if it's monday (will be the only game)
-# # so we do a day of week check before proceeding. Monday = 1 in this context
-# ###############################################################################
-# today_day_of_week = datetime.today().isoweekday()
-# if len(dratings_formatted_data) == 2 and today_day_of_week != 1:
-#     driver.get(
-#         'https://www.dratings.com/predictor/nfl-football-predictions/upcoming/4#scroll-upcoming')
-
-#     time.sleep(5)
-
-#     dRatings_game_table = driver.find_element_by_class_name('table-body')
-
-#     dRating_team_names = dRatings_game_table.find_elements_by_class_name(
-#         'ta--left.tf--body')
-
-#     drating_team_name_list = []
-#     for i in dRating_team_names:
-#         teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
-#         for i in teams:
-#             drating_team_name_list.append(i)
-
-#     dratings_percentages_and_points = dRatings_game_table.find_elements_by_class_name(
-#         'table-division')
-
-#     dratings_predicted_scores = []
-#     for i in dratings_percentages_and_points:
-#         data_list = i.text.split('\n')
-#         if len(data_list) > 1:
-#             for i in data_list:
-#                 if not i.endswith('%'):
-#                     dratings_predicted_scores.append(float(i))
-
-#     for i in range(0, len(drating_team_name_list)):
-#         dratings_formatted_data.append(
-#             [drating_team_name_list[i], dratings_predicted_scores[i]])
-
-
-# for i in dratings_formatted_data:
-#     predictions[i[0]] = {
-#         "dRatings": i[1]
-#     }
-
-# print(figlet.renderText("dRatings Scores"))
-# print(dratings_formatted_data)
-
-predictions = {
-    "Team": {
-        # "dRatings": 1
-    }
-}
-###############################################################################
-# PREDICTEM BELOW
-###############################################################################
-# driver.execute_script("window.open('');")
-# driver.switch_to.window(driver.window_handles[1])
-# driver.get('https://www.predictem.com/nfl/nfl-football-computer-picks-simulated-predictions-for-each-pro-football-game-every-week/')
-
-# predictEm_predictions = driver.find_element_by_class_name('et_pb_text_inner')
-# predictEm_all_text = predictEm_predictions.text.split('\n')
-
-# dividing_index_from_prev_scores = 0
-# for i in predictEm_all_text:
-#     # if i.endswith("Computer Picks") or i.endswith("Score Predictions") or i.endswith("Score Picks"):
-#     if i.endswith("12 NFL Computer Score Picks"):
-#         break
-#     else:
-#         dividing_index_from_prev_scores += 1
-# this_weeks_games_only = predictEm_all_text[:dividing_index_from_prev_scores]
-# current_week_matchups = ('\n').join(this_weeks_games_only)
-
-# predictEm_individual_team_prediction = re.findall(
-#     '(?<=\d{3}: ).+', current_week_matchups)
-# predictEm_all_text = predictEm_predictions.text
-
-# predictEm_formatted_data = []
-# for i in range(0, len(predictEm_individual_team_prediction)):
-#     predictEm_regex_split = "\s(?=\d+)"
-#     predictEm_formatted_data.append(
-#         re.split(predictEm_regex_split, predictEm_individual_team_prediction[i]))
-
-
-# def make_lowercase_and_number(two_dim_list):
-#     formatted = []
-#     for i in two_dim_list:
-#         lower_case_team_and_number_score = []
-#         lower_case_team_and_number_score.append(i[0][0] + i[0][1:].lower())
-#         lower_case_team_and_number_score.append(float(i[1]))
-#         formatted.append(lower_case_team_and_number_score)
-#     return formatted
-
-
-# predictEm_formatted_data = make_lowercase_and_number(predictEm_formatted_data)
-
-# print(figlet.renderText("predictEm Scores"))
-# print(predictEm_formatted_data)
-
-# for i in predictEm_formatted_data:
-#     location_regex = r'(?i){0}'.format(i[0])
-#     for j in team_lookup:
-#         full_name_found = re.findall(location_regex, j["full_name"])
-#         if full_name_found:
-#             if j["name"] in predictions:
-#                 predictions[j["name"]]["predictEm"] = i[1]
-#             else:
-#                 predictions[j["name"]] = {
-#                     "predictEm": i[1]
-#                 }
-#         elif "alt" in j:
-#             if j["name"] in predictions:
-#                 predictions[j["name"]]["predictEm"] = i[1]
+predictions = {}
 
 ###############################################################################
 # ODD SHARK BELOW
 ###############################################################################
-driver.execute_script("window.open('');")
-driver.switch_to.window(driver.window_handles[1])
 driver.get('https://www.oddsshark.com/nfl/scores')
+
 time.sleep(3)
 
 ###############################################################################
@@ -202,8 +46,6 @@ time.sleep(3)
 ###############################################################################
 oddShark_get_week = driver.find_element_by_class_name('button__subtitle')
 week_of_season += '_'.join(oddShark_get_week.text.split(' '))
-print(week_of_season)
-
 
 oddShark_scoreboard = driver.find_element_by_class_name('scoreboard')
 oddShark_all_text = oddShark_scoreboard.text.split('\n')
@@ -241,14 +83,103 @@ for i in range(0, len(oddShark_predcted_scores_only)):
 print(figlet.renderText("oddShark Scores"))
 print(oddShark_formatted_data)
 
+total_teams_playing_this_week = len(oddShark_formatted_data)
 
 for i in oddShark_formatted_data:
+    predictions[i[0]] = {
+        "oddShark": i[1]
+    }
+
+###############################################################################
+# DRATINGS BELOW
+###############################################################################
+driver.execute_script("window.open('');")
+driver.switch_to.window(driver.window_handles[1])
+driver.get('https://www.dratings.com/predictor/nfl-football-predictions/')
+
+time.sleep(5)
+
+
+dRatings_game_table = driver.find_element_by_class_name('table-body')
+
+dRating_team_names = dRatings_game_table.find_elements_by_class_name(
+    'ta--left.tf--body')
+
+drating_team_name_list = []
+for i in dRating_team_names:
+    teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
+    for i in teams:
+        drating_team_name_list.append(i)
+
+dratings_percentages_and_points = dRatings_game_table.find_elements_by_class_name(
+    'table-division')
+
+dratings_predicted_scores = []
+for i in dratings_percentages_and_points:
+    data_list = i.text.split('\n')
+    if len(data_list) > 1:
+        for i in data_list:
+            if not i.endswith('%'):
+                dratings_predicted_scores.append(float(i))
+
+dratings_formatted_data = []
+
+for i in range(0, len(drating_team_name_list)):
+    dratings_formatted_data.append(
+        [drating_team_name_list[i], dratings_predicted_scores[i]])
+
+time.sleep(5)
+
+###############################################################################
+# dRatings displays games by day. So only thur games are visibible and you
+# must hit the link below to view sat/sun/mon games on new pages
+###############################################################################
+scroll_page = 4
+while len(dratings_formatted_data) < total_teams_playing_this_week:
+    driver.get(
+        f'https://www.dratings.com/predictor/nfl-football-predictions/upcoming/{scroll_page}#scroll-upcoming')
+
+    time.sleep(5)
+
+    dRatings_game_table = driver.find_element_by_class_name('table-body')
+
+    dRating_team_names = dRatings_game_table.find_elements_by_class_name(
+        'ta--left.tf--body')
+
+    drating_team_name_list = []
+    for i in dRating_team_names:
+        teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
+        for i in teams:
+            drating_team_name_list.append(i)
+
+    dratings_percentages_and_points = dRatings_game_table.find_elements_by_class_name(
+        'table-division')
+
+    dratings_predicted_scores = []
+    for i in dratings_percentages_and_points:
+        data_list = i.text.split('\n')
+        if len(data_list) > 1:
+            for i in data_list:
+                if not i.endswith('%'):
+                    dratings_predicted_scores.append(float(i))
+
+    for i in range(0, len(drating_team_name_list)):
+        dratings_formatted_data.append(
+            [drating_team_name_list[i], dratings_predicted_scores[i]])
+
+    scroll_page += 1
+
+
+for i in dratings_formatted_data:
     if i[0] in predictions:
-        predictions[i[0]]["oddShark"] = i[1]
+        predictions[i[0]]["dRatings"] = i[1]
     else:
         predictions[i[0]] = {
-            "oddShark": i[1]
+            "dRatings": i[1]
         }
+
+print(figlet.renderText("dRatings Scores"))
+print(dratings_formatted_data)
 
 for key in predictions:
     dict = predictions[key]
@@ -257,7 +188,7 @@ for key in predictions:
     for i in dict:
         total += dict[i]
         total_predictions += 1
-    average = round(total / total_predictions, 1)
+    average = round(total / total_predictions)
     predictions[key]["average"] = average
 
 ###############################################################################
@@ -291,8 +222,6 @@ for i in espn_com:
 driver.execute_script("window.open('');")
 driver.switch_to.window(driver.window_handles[3])
 driver.get('https://www.nfl.com/schedules/')
-# sub week number after reg for specific week
-# driver.get('https://www.nfl.com/schedules/2021/REG9/')
 
 time.sleep(3)
 
@@ -341,13 +270,15 @@ try:
             favored_team = ""
 
             if "avgMinusSpread" in predictions[away_team]:
-                away_predicted = predictions[away_team]["avgMinusSpread"]
+                # away_predicted = predictions[away_team]["avgMinusSpread"]
+                away_predicted = predictions[away_team]["average"]
                 favored_team = away_team
             else:
                 away_predicted = predictions[away_team]["average"]
 
             if "avgMinusSpread" in predictions[home_team]:
-                home_predicted = predictions[home_team]["avgMinusSpread"]
+                # home_predicted = predictions[home_team]["avgMinusSpread"]
+                home_predicted = predictions[home_team]["average"]
                 favored_team = home_team
             else:
                 home_predicted = predictions[home_team]["average"]
