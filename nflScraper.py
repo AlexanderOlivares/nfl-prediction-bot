@@ -76,6 +76,8 @@ oddShark_formatted_data = []
 for i in range(0, len(oddShark_predcted_scores_only)):
     team_name = oddShark_active_team_names[i]
     predicted_score = float(oddShark_predcted_scores_only[i])
+    if team_name == "Chiefs":
+        continue
     if team_name == "Football Team":
         team_name = "Team"
     oddShark_formatted_data.append([team_name, predicted_score])
