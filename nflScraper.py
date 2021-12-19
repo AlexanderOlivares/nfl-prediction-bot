@@ -76,8 +76,6 @@ oddShark_formatted_data = []
 for i in range(0, len(oddShark_predcted_scores_only)):
     team_name = oddShark_active_team_names[i]
     predicted_score = float(oddShark_predcted_scores_only[i])
-    if team_name == "Chiefs":
-        continue
     if team_name == "Football Team":
         team_name = "Team"
     oddShark_formatted_data.append([team_name, predicted_score])
@@ -138,7 +136,7 @@ time.sleep(5)
 ###############################################################################
 scroll_page = 2
 ############# DELETE THE -1 after week 15 ################
-while len(dratings_formatted_data) < total_teams_playing_this_week - 1:
+while len(dratings_formatted_data) < total_teams_playing_this_week:
     driver.get(
         f'https://www.dratings.com/predictor/nfl-football-predictions/upcoming/{scroll_page}#scroll-upcoming')
 
