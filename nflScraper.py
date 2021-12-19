@@ -115,7 +115,7 @@ for i in range(0, len(drating_team_name_list)):
 # dRatings displays games by day. So only thur games are visibible and you
 # must hit the link below to view sat/sun/mon games on new pages
 ###############################################################################
-scroll_page = 4
+scroll_page = 2
 while len(dratings_formatted_data) < total_teams_playing_this_week:
     driver.get(
         f'https://www.dratings.com/predictor/nfl-football-predictions/upcoming/{scroll_page}#scroll-upcoming')
@@ -196,10 +196,9 @@ for i in espn_com:
             fav = full_team_name.split(' ')[-1]
             if fav == "Washington":
                 fav = "Team"
-            if line < 0:
-                predictions[fav]["favoredBy"] = line
-                predictions[fav]["avgMinusSpread"] = round(
-                    predictions[fav]["average"] + line, 1)
+            predictions[fav]["favoredBy"] = line
+            predictions[fav]["avgMinusSpread"] = round(
+                predictions[fav]["average"] + line, 1)
 
 ###############################################################################
 # ORDER PREDICTIONS BY CURRENT WEEKLY MATCHUP
