@@ -134,8 +134,9 @@ time.sleep(5)
 # dRatings displays games by day. So only thur games are visibible and you
 # must hit the link below to view sat/sun/mon games on new pages
 ###############################################################################
-scroll_page = 4
-while len(dratings_formatted_data) < total_teams_playing_this_week:
+scroll_page = 2
+############# DELETE THE -1 after week 15 ################
+while len(dratings_formatted_data) < total_teams_playing_this_week - 1:
     driver.get(
         f'https://www.dratings.com/predictor/nfl-football-predictions/upcoming/{scroll_page}#scroll-upcoming')
 
