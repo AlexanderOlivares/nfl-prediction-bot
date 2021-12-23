@@ -39,7 +39,7 @@ predictions = {}
 ###############################################################################
 driver.get('https://www.oddsshark.com/nfl/scores')
 
-time.sleep(3)
+time.sleep(5)
 
 ###############################################################################
 # get the current week of the season to add data in to correct table
