@@ -270,14 +270,12 @@ try:
             favored_team = ""
 
             if "avgMinusSpread" in predictions[away_team]:
-                # away_predicted = predictions[away_team]["avgMinusSpread"]
                 away_predicted = predictions[away_team]["average"]
                 favored_team = away_team
             else:
                 away_predicted = predictions[away_team]["average"]
 
             if "avgMinusSpread" in predictions[home_team]:
-                # home_predicted = predictions[home_team]["avgMinusSpread"]
                 home_predicted = predictions[home_team]["average"]
                 favored_team = home_team
             else:
