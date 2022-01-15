@@ -17,12 +17,11 @@ chromediver_version = os.environ.get("CHROMEDRIVER_VERSION")
 chromdriver_latest_release = requests.get(
     "https://chromedriver.storage.googleapis.com/LATEST_RELEASE").text
 # os.environ["CHROMEDRIVER_VERSION"] = chromdriver_latest_release
+print('chromedriver latest release below:')
+print(chromdriver_latest_release)
 print('Updated chromedriver version below:')
 print(os.environ.get("CHROMEDRIVER_VERSION"))
 
-###############################################################################
-quit()
-###############################################################################
 
 chrome_options = Options()
 chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
@@ -45,6 +44,10 @@ print(figlet.renderText("Loading..."))
 team_lookup = teamDict.lookup
 week_of_season = "_"
 predictions = {}
+
+###############################################################################
+quit()
+###############################################################################
 
 ###############################################################################
 # ODD SHARK BELOW
