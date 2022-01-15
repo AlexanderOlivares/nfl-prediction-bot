@@ -20,6 +20,10 @@ os.environ["CHROMEDRIVER_VERSION"] = chromdriver_latest_release
 print('Updated chromedriver version below:')
 print(os.environ.get("CHROMEDRIVER_VERSION"))
 
+###############################################################################
+quit()
+###############################################################################
+
 chrome_options = Options()
 chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 chrome_options.add_argument("--no-sandbox")
@@ -91,9 +95,6 @@ for i in range(0, len(oddShark_predcted_scores_only)):
 print(figlet.renderText("oddShark Scores"))
 print(oddShark_formatted_data)
 
-###############################################################################
-quit()
-###############################################################################
 
 total_teams_playing_this_week = len(oddShark_formatted_data)
 
