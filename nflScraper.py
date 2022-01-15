@@ -16,7 +16,7 @@ import requests
 chromediver_version = os.environ.get("CHROMEDRIVER_VERSION")
 chromdriver_latest_release = requests.get(
     "https://chromedriver.storage.googleapis.com/LATEST_RELEASE").text
-os.environ["CHROMEDRIVER_VERSION"] = chromdriver_latest_release
+# os.environ["CHROMEDRIVER_VERSION"] = chromdriver_latest_release
 print('Updated chromedriver version below:')
 print(os.environ.get("CHROMEDRIVER_VERSION"))
 
