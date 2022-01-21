@@ -10,6 +10,14 @@ To run on your computer clone the "scraper_only" branch
 git clone -b scraper_only --single-branch https://github.com/AlexanderOlivares/nfl-prediction-bot.git
 ```
 
+Install dependencies
+`pip install -r requirements.txt`
+
+Download the [Chromedriver](https://chromedriver.chromium.org/downloads) version corresponding to your currnet version of Google Chrome
+
+Run the script
+`python3 nflScraper.py`
+
 #### Sites Scraped
 
 For Predictions

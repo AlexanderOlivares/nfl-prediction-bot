@@ -4,8 +4,6 @@ import time
 import re
 import teamDict
 import json
-from pyfiglet import Figlet
-from datetime import datetime
 
 driver = webdriver.Chrome(
     '/Users/alexolivares/Desktop/items/automate/chromedriver')
@@ -225,7 +223,9 @@ for i in nfl_com_sched:
 
 print("Raw Data")
 print(json.dumps(matchups, indent=4))
-print("Picks")
+week_results = f"Picks for Nfl{week_of_season}"
+print(week_results)
+print("-" * len(week_results))
 
 ###############################################################################
 # PRINT OUT PICKS
