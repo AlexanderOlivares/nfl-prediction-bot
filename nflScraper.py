@@ -7,7 +7,6 @@ import json
 from pyfiglet import Figlet
 import psycopg2
 import os
-from datetime import datetime
 import requests
 
 ###############################################################################
@@ -32,7 +31,6 @@ print(figlet.renderText("Loading..."))
 team_lookup = teamDict.lookup
 week_of_season = "_"
 predictions = {}
-
 
 ###############################################################################
 # ODD SHARK BELOW
@@ -99,7 +97,6 @@ driver.get('https://www.dratings.com/predictor/nfl-football-predictions/')
 
 time.sleep(5)
 
-
 dRatings_game_table = driver.find_element_by_class_name('table-body')
 
 dRating_team_names = dRatings_game_table.find_elements_by_class_name(
@@ -135,7 +132,6 @@ time.sleep(5)
 # must hit the link below to view sat/sun/mon games on new pages
 ###############################################################################
 scroll_page = 2
-############# DELETE THE -1 after week 15 ################
 while len(dratings_formatted_data) < total_teams_playing_this_week:
     driver.get(
         f'https://www.dratings.com/predictor/nfl-football-predictions/upcoming/{scroll_page}#scroll-upcoming')
