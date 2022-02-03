@@ -60,13 +60,12 @@ for i in range(0, len(oddShark_regex_match_score_with_over_under)):
         oddShark_predcted_scores_only.append(
             oddShark_regex_match_score_with_over_under[i])
 
-nfl_team_lookup = ["Cardinals", "Falcons", "Ravens", "Bills", "Panthers", "Bears", "Bengals", "Browns", "Cowboys", "Broncos", "Lions", "Packers", "Texans", "Colts", "Jaguars", "Chiefs",
-                   "Raiders", "Chargers", "Rams", "Dolphins", "Vikings", "Patriots", "Saints", "Giants", "Jets", "Eagles", "Steelers", "49ers", "Seahawks", "Buccaneers", "Titans", "Football Team"]
+nfl_team_lookup = list(map(lambda team: team["name"], team_lookup))
 
 oddShark_active_team_names = []
 
 for i in oddShark_all_text:
-    if i in nfl_team_lookup:
+    if i in nfl_team_lookup or i == 'Fooball Team':
         oddShark_active_team_names.append(i)
 
 oddShark_formatted_data = []
