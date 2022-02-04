@@ -1,29 +1,15 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 import time
 import re
 import teamDict
 import json
 from pyfiglet import Figlet
-import psycopg2
 import os
-import requests
+if "PRODUCTION" in os.environ:
+    from env_configs import prod_config as config
+else:
+    from env_configs import dev_config as config
 
-###############################################################################
-# CHROMEDRIVER CONFIG FOR HEROKU
-###############################################################################
-chromdriver_latest_release = requests.get(
-    "https://chromedriver.storage.googleapis.com/LATEST_RELEASE").text
-os.environ["CHROMEDRIVER_VERSION"] = chromdriver_latest_release
-
-chrome_options = Options()
-chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument("--window-size=1920,1080")
-chrome_options.add_argument('--headless')
-chrome_options.add_argument('--disable-dev-shm-usage')
-driver = webdriver.Chrome(executable_path=os.environ.get(
-    "CHROMEDRIVER_PATH"), options=chrome_options)
+driver = config.driver
 
 figlet = Figlet(font='smslant')
 print(figlet.renderText("Loading..."))
@@ -227,11 +213,9 @@ nfl_com_sched = nfl_com_schedule.text.split('\n')
 # WRITE TO DB
 ###############################################################################
 
-db_Url = os.environ.get('DATABASE_URL')
-
 try:
-    conn = psycopg2.connect(db_Url)
-    cur = conn.cursor()
+    cur = config.cursor
+    conn = config.conn
 
     create_table = (
         f"""
