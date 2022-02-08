@@ -1,6 +1,5 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from nba_team_list import nba_team_list
@@ -23,8 +22,14 @@ try:
     ###############################################################################
     driver.get('https://www.oddsshark.com/nba/scores')
 
-    wait_for_oddshark_pageload = WebDriverWait(driver, 10).until(
+    # wait_for_oddshark_id_presence = WebDriverWait(driver, 10).until(
+    #     EC.presence_of_element_located((By.ID, "oslive-scoreboard")))
+    # wait_for_oddshark_class_presence = WebDriverWait(driver, 10).until(
+    #     EC.presence_of_element_located((By.ID, "header-text")))
+    WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "oslive-scoreboard")))
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.CLASS_NAME, "header-text")))
 
     get_oddshark_date = driver.find_element_by_class_name('header-text').text
     match_date_regex = '[A-Z]\w+\s\d{1,2}'
@@ -42,8 +47,9 @@ try:
     score_count = 0
     for i in oddshark_game_data:
         for team in nba_team_list:
-            if i == team["simpleName"]:
-                team_and_score.append(i)
+            team_name = i.split(' ')[-1]
+            if team_name == team["simpleName"]:
+                team_and_score.append(team_name)
         predicted_score = re.findall("^\d{2,3}\.?\d*$", i)
         if predicted_score:
             if score_count < 2:
@@ -51,6 +57,7 @@ try:
                 score_count += 1
             else:
                 score_count = 0
+
     for i in range(len(team_and_score) - 2):
         is_team_name = re.findall("[^0-9\.]", team_and_score[i])
         if is_team_name:
@@ -66,11 +73,17 @@ try:
     driver.switch_to.window(driver.window_handles[1])
     driver.get('https://www.dratings.com/predictor/nba-basketball-predictions/')
 
-    wait_for_dratings_pageload = WebDriverWait(driver, 10).until(
+    WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.CLASS_NAME, "table-division")))
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.CLASS_NAME, "ta--left.tf--body")))
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.CLASS_NAME, "heading-3")))
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "scroll-upcoming")))
 
     get_dratings_date = driver.find_element_by_class_name('heading-3').text
-    dratings_date = re.findall(rf"{match_date_regex}", get_dratings_date)
+    dratings_date = re.findall(rf"{match_date_regex}", get_dratings_date)[0]
     if dratings_date != todays_date:
         raise Exception("Game dates do not match")
 
@@ -112,12 +125,14 @@ try:
     driver.switch_to.window(driver.window_handles[2])
     driver.get('https://www.espn.com/nba/lines')
 
-    wait_for_espn_pageload = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "Table__TD")))
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.CLASS_NAME, "Table__TR")))
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.CLASS_NAME, "Table__Title.margin-subtitle")))
 
     get_espn_date = driver.find_element_by_class_name(
         'Table__Title.margin-subtitle').text
-    espn_date = re.findall(rf"{match_date_regex}", get_espn_date)
+    espn_date = re.findall(rf"{match_date_regex}", get_espn_date)[0]
     if espn_date != todays_date:
         raise Exception("Game dates do not match")
 
@@ -170,6 +185,7 @@ try:
                     pick = "PUSH"
                 db_row["pick"] = pick
         if teams_in_current_matchup == 2:
+            db_row["game_date"] = todays_date
             matchups.append(db_row)
             db_row = {}
             matchup_cache = {}
@@ -194,7 +210,7 @@ try:
         away_predicted decimal,
         home_team VARCHAR(255),
         home_predicted decimal,
-        vegas_line numeric,
+        vegas_line decimal,
         favored_team VARCHAR(255),
         pick VARCHAR(255)
         )
@@ -204,19 +220,17 @@ try:
     cur.execute(create_table)
     conn.commit()
 
-    for game_date, away_team, away_predicted, home_team, home_predicted, vegas_line, favored_team, pick in matchups:
-        insert_command = f'INSERT INTO nba{year} (game_date, away_team, away_predicted, home_team, home_predicted, vegas_line, favored_team, pick) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
-        insert_values = (game_date, away_team, away_predicted,
-                         home_team, home_predicted, vegas_line, favored_team, pick)
+    for column in matchups:
+        insert_command = f"""INSERT INTO nba_{year} (away_team, away_predicted, favored_team, vegas_line, home_team, home_predicted, pick, game_date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+        insert_values = (column["away_team"], column["away_predicted"], column["favored_team"],
+                         column["vegas_line"], column["home_team"], column["home_predicted"], column["pick"], column["game_date"])
+        cur.execute(insert_command, insert_values)
 
-    cur.execute(insert_command, insert_values)
+    conn.commit()
+    print('Row Inserted')
 
 except TimeoutException:
     print(str(TimeoutException))
-    driver.quit()
-
-except:
-    print("Error occurred")
     driver.quit()
 
 finally:

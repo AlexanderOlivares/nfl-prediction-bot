@@ -146,7 +146,7 @@ nba_team_list = [
     {
         "abbreviation": "POR",
         "teamName": "Portland Trail Blazers",
-        "simpleName": "Trail Blazers",
+        "simpleName": "Blazers",
         "location": "Portland"
     },
     {

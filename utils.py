@@ -19,7 +19,11 @@ class DateFormatter():
 
 
 def seventysixers_to_sixers(teamname_string):
-    return "sixers" if teamname_string == "76ers" else teamname_string
+    return "Sixers" if teamname_string == "76ers" else teamname_string
+
+
+def washington_to_team(teamname_string):
+    return "Team" if teamname_string == "Washington" else teamname_string
 
 
 def normal_round(number):
@@ -29,7 +33,6 @@ def normal_round(number):
 def get_and_format_vegas_line(espn_vegas_lines, predictions, format_outlier_teamname, normal_round):
     for i in espn_vegas_lines:
         team_name_and_data = i.text.split('\n')
-        print(team_name_and_data)
         if len(team_name_and_data) == 2:
             full_team_name, data = team_name_and_data
             regex_line_finder = '(?<=\) )\-\d+\.\d{1}'

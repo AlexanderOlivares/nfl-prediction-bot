@@ -1,3 +1,4 @@
+from utils import get_and_format_vegas_line, normal_round, washington_to_team
 import time
 import re
 import teamDict
@@ -180,22 +181,11 @@ driver.execute_script("window.open('');")
 driver.switch_to.window(driver.window_handles[2])
 driver.get('https://www.espn.com/nfl/lines')
 
-espn_com = driver.find_elements_by_class_name('Table__TR')
+espn_vegas_lines = driver.find_elements_by_class_name('Table__TR')
 
-for i in espn_com:
-    team_name_and_data = i.text.split('\n')
-    if len(team_name_and_data) == 2:
-        full_team_name, data = team_name_and_data
-        regex_line_finder = '(?<=\) )\-\d+\.\d{1}'
-        line_list = re.findall(regex_line_finder, data)
-        if (len(line_list) == 1):
-            line = float(line_list[0])
-            fav = full_team_name.split(' ')[-1]
-            if fav == "Washington":
-                fav = "Team"
-            predictions[fav]["favoredBy"] = line
-            predictions[fav]["avgMinusSpread"] = round(
-                predictions[fav]["average"] + line, 1)
+predictions = get_and_format_vegas_line(espn_vegas_lines, predictions,
+                                        washington_to_team, normal_round)
+
 
 ###############################################################################
 # ORDER PREDICTIONS BY CURRENT WEEKLY MATCHUP
