@@ -1,16 +1,29 @@
 import re
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from datetime import date
 
 
-def normal_round(number):
-    return int(number + 0.5)
+class DateFormatter():
+    @staticmethod
+    def remove_leading_zero(str):
+        return str[1:] if str.startswith("0") else str
+
+    def get_todays_date():
+        today = date.today()
+        month = today.strftime("%B")
+        day = DateFormatter.remove_leading_zero(today.strftime("%d")).lower()
+        return (f"{month} {day}")
+
+    def get_current_year():
+        today = date.today()
+        return today.year
 
 
 def seventysixers_to_sixers(teamname_string):
     return "sixers" if teamname_string == "76ers" else teamname_string
+
+
+def normal_round(number):
+    return int(number + 0.5)
 
 
 def get_and_format_vegas_line(espn_vegas_lines, predictions, format_outlier_teamname, normal_round):

@@ -4,7 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from nba_team_list import nba_team_list
-from utils import get_and_format_vegas_line, normal_round, seventysixers_to_sixers, wait_for_presence_of
+from utils import DateFormatter, get_and_format_vegas_line, normal_round, seventysixers_to_sixers
 import os
 import re
 import json
@@ -17,7 +17,6 @@ else:
 try:
     driver = config.driver
     predictions = {}
-    match_date_regex = '[A-Z]\w+\s\d{1,2}'
 
     ###############################################################################
     # ODD SHARK BELOW
@@ -28,7 +27,13 @@ try:
         EC.presence_of_element_located((By.ID, "oslive-scoreboard")))
 
     get_oddshark_date = driver.find_element_by_class_name('header-text').text
-    oddshark_date = re.findall(rf"{match_date_regex}", get_oddshark_date)
+    match_date_regex = '[A-Z]\w+\s\d{1,2}'
+    oddshark_game_date = re.findall(
+        rf"{match_date_regex}", get_oddshark_date)[0]
+
+    todays_date = DateFormatter.get_todays_date()
+    if oddshark_game_date != todays_date:
+        raise Exception("Game dates do not match")
 
     scoreboard = driver.find_element_by_id("oslive-scoreboard")
     oddshark_game_data = scoreboard.text.split('\n')
@@ -66,7 +71,7 @@ try:
 
     get_dratings_date = driver.find_element_by_class_name('heading-3').text
     dratings_date = re.findall(rf"{match_date_regex}", get_dratings_date)
-    if dratings_date != oddshark_date:
+    if dratings_date != todays_date:
         raise Exception("Game dates do not match")
 
     get_game_table = driver.find_element_by_id("scroll-upcoming")
@@ -113,8 +118,7 @@ try:
     get_espn_date = driver.find_element_by_class_name(
         'Table__Title.margin-subtitle').text
     espn_date = re.findall(rf"{match_date_regex}", get_espn_date)
-
-    if espn_date != dratings_date:
+    if espn_date != todays_date:
         raise Exception("Game dates do not match")
 
     espn_vegas_lines = driver.find_elements_by_class_name('Table__TR')
@@ -174,6 +178,38 @@ try:
             teams_in_current_matchup += 1
 
     print(json.dumps(matchups, indent=4))
+
+    ############################################
+    # ADD TO DB
+    ############################################
+    cur = config.cursor
+    conn = config.conn
+
+    year = DateFormatter.get_current_year()
+    create_table = (
+        f"""
+        CREATE TABLE IF NOT EXISTS nba_{year}(
+        game_date VARCHAR(255),
+        away_team VARCHAR(255),
+        away_predicted decimal,
+        home_team VARCHAR(255),
+        home_predicted decimal,
+        vegas_line numeric,
+        favored_team VARCHAR(255),
+        pick VARCHAR(255)
+        )
+        """
+    )
+
+    cur.execute(create_table)
+    conn.commit()
+
+    for game_date, away_team, away_predicted, home_team, home_predicted, vegas_line, favored_team, pick in matchups:
+        insert_command = f'INSERT INTO nba{year} (game_date, away_team, away_predicted, home_team, home_predicted, vegas_line, favored_team, pick) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
+        insert_values = (game_date, away_team, away_predicted,
+                         home_team, home_predicted, vegas_line, favored_team, pick)
+
+    cur.execute(insert_command, insert_values)
 
 except TimeoutException:
     print(str(TimeoutException))
