@@ -7,6 +7,7 @@ from utils import DateFormatter, get_and_format_vegas_line, normal_round, sevent
 import os
 import re
 import json
+import time
 
 if "PRODUCTION" in os.environ:
     from env_configs import prod_config as config
@@ -22,14 +23,12 @@ try:
     ###############################################################################
     driver.get('https://www.oddsshark.com/nba/scores')
 
-    # wait_for_oddshark_id_presence = WebDriverWait(driver, 10).until(
-    #     EC.presence_of_element_located((By.ID, "oslive-scoreboard")))
-    # wait_for_oddshark_class_presence = WebDriverWait(driver, 10).until(
-    #     EC.presence_of_element_located((By.ID, "header-text")))
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "oslive-scoreboard")))
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.CLASS_NAME, "header-text")))
+
+    time.sleep(5)
 
     get_oddshark_date = driver.find_element_by_class_name('header-text').text
     match_date_regex = '[A-Z]\w+\s\d{1,2}'
@@ -82,6 +81,8 @@ try:
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "scroll-upcoming")))
 
+    time.sleep(5)
+
     get_dratings_date = driver.find_element_by_class_name('heading-3').text
     dratings_date = re.findall(rf"{match_date_regex}", get_dratings_date)[0]
     if dratings_date != todays_date:
@@ -129,6 +130,8 @@ try:
         EC.presence_of_element_located((By.CLASS_NAME, "Table__TR")))
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.CLASS_NAME, "Table__Title.margin-subtitle")))
+
+    time.sleep(5)
 
     get_espn_date = driver.find_element_by_class_name(
         'Table__Title.margin-subtitle').text
