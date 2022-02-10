@@ -115,9 +115,13 @@ try:
 
     dratings_teams_and_scores = zip(dratings_teams, dratings_scores)
     for team, score in dratings_teams_and_scores:
-        predictions[team]['dratings'] = float(score)
-        predictions[team]['average'] = normal_round((float(
-            score) + predictions[team]['oddshark']) / 2)
+        if team in predictions:
+            predictions[team]['dratings'] = float(score)
+            predictions[team]['average'] = normal_round((float(
+                score) + predictions[team]['oddshark']) / 2)
+        else:
+            print('Team is not in predictions')
+            driver.quit()
 
     ###############################################################################
     # ESPN BELOW
@@ -141,37 +145,37 @@ try:
 
     espn_vegas_lines = driver.find_elements_by_class_name('Table__TR')
 
-    predictions = get_and_format_vegas_line(
+    spread_predictions = get_and_format_vegas_line(
         espn_vegas_lines, predictions, seventysixers_to_sixers, normal_round)
 
-    print(json.dumps(predictions, indent=4))
+    print(json.dumps(spread_predictions, indent=4))
 
     matchups = []
     matchup_cache = {}
     db_row = {}
     teams_in_current_matchup = 1
-    for team in predictions:
-        if "favoredBy" in predictions[team]:
+    for team in spread_predictions:
+        if "favoredBy" in spread_predictions[team]:
             db_row["favored_team"] = team
-        if "avgMinusSpread" in predictions[team]:
+        if "avgMinusSpread" in spread_predictions[team]:
             db_row["favored_team"] = team
-            db_row["vegas_line"] = predictions[team]["favoredBy"]
-            matchup_cache["avg_minus_spread"] = predictions[team]["avgMinusSpread"]
+            db_row["vegas_line"] = spread_predictions[team]["favoredBy"]
+            matchup_cache["avg_minus_spread"] = spread_predictions[team]["avgMinusSpread"]
             matchup_cache["dog_pick"] = team
         if teams_in_current_matchup == 1:
             db_row["away_team"] = team
-            db_row["away_predicted"] = predictions[team]["average"]
+            db_row["away_predicted"] = spread_predictions[team]["average"]
         if teams_in_current_matchup == 2:
             db_row["home_team"] = team
-            db_row["home_predicted"] = predictions[team]["average"]
+            db_row["home_predicted"] = spread_predictions[team]["average"]
             spread = abs(db_row["vegas_line"])
             pick = ""
             if db_row["favored_team"] == team:
                 # home team is favorite
-                if predictions[team]["avgMinusSpread"]:
-                    if predictions[team]["avgMinusSpread"] - db_row["away_predicted"] > 0:
+                if spread_predictions[team]["avgMinusSpread"]:
+                    if spread_predictions[team]["avgMinusSpread"] - db_row["away_predicted"] > 0:
                         pick = f"{team} -{spread}"
-                    elif predictions[team]["avgMinusSpread"] - db_row["away_predicted"] < 0:
+                    elif spread_predictions[team]["avgMinusSpread"] - db_row["away_predicted"] < 0:
                         dog = db_row["away_team"]
                         pick = f"{dog} +{spread}"
                     else:
@@ -180,9 +184,9 @@ try:
             else:
                 # away team is favorite
                 away_team = db_row["away_team"]
-                if matchup_cache["avg_minus_spread"] - predictions[team]["average"] < 0:
+                if matchup_cache["avg_minus_spread"] - spread_predictions[team]["average"] < 0:
                     pick = f"{team} +{spread}"
-                elif matchup_cache["avg_minus_spread"] - predictions[team]["average"] > 0:
+                elif matchup_cache["avg_minus_spread"] - spread_predictions[team]["average"] > 0:
                     pick = f"{away_team} -{spread}"
                 else:
                     pick = "PUSH"
