@@ -1,4 +1,4 @@
-from utils import get_and_format_vegas_line, normal_round, washington_to_team
+from utils import get_and_format_vegas_line, washington_to_team
 import time
 import re
 import teamDict
@@ -183,8 +183,8 @@ driver.get('https://www.espn.com/nfl/lines')
 
 espn_vegas_lines = driver.find_elements_by_class_name('Table__TR')
 
-predictions = get_and_format_vegas_line(espn_vegas_lines, predictions,
-                                        washington_to_team, normal_round)
+predictions = get_and_format_vegas_line(
+    espn_vegas_lines, predictions, washington_to_team)
 
 
 ###############################################################################

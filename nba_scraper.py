@@ -146,7 +146,7 @@ try:
     espn_vegas_lines = driver.find_elements_by_class_name('Table__TR')
 
     spread_predictions = get_and_format_vegas_line(
-        espn_vegas_lines, predictions, seventysixers_to_sixers, normal_round)
+        espn_vegas_lines, predictions, seventysixers_to_sixers)
 
     print(json.dumps(spread_predictions, indent=4))
 

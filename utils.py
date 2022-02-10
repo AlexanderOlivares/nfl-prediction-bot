@@ -30,7 +30,7 @@ def normal_round(number):
     return int(number + 0.5)
 
 
-def get_and_format_vegas_line(espn_vegas_lines, predictions, format_outlier_teamname, normal_round):
+def get_and_format_vegas_line(espn_vegas_lines, predictions, format_outlier_teamname):
     for i in espn_vegas_lines:
         team_name_and_data = i.text.split('\n')
         if len(team_name_and_data) == 2:
@@ -42,8 +42,7 @@ def get_and_format_vegas_line(espn_vegas_lines, predictions, format_outlier_team
                 fav = format_outlier_teamname(full_team_name.split(' ')[-1])
                 if fav in predictions:
                     predictions[fav]["favoredBy"] = abs(line)
-                    predictions[fav]["avgMinusSpread"] = normal_round(
-                        predictions[fav]["average"] + line)
+                    predictions[fav]["avgMinusSpread"] = predictions[fav]["average"] + line
                 else:
                     print('Favored by team not found in predictions')
                     quit()
