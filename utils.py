@@ -16,8 +16,7 @@ class DateFormatter():
         today = date.today()
         month = today.strftime("%B")
         day = DateFormatter.remove_leading_zero(today.strftime("%d")).lower()
-        # return (f"{month} {day}")
-        return (f"{day} {month}")
+        return (f"{month} {day}")
 
     def get_current_year():
         today = date.today()
