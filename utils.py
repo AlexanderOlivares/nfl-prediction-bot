@@ -1,5 +1,10 @@
 import re
 from datetime import date
+import sentry_sdk
+sentry_sdk.init(
+    "https://83c08311544246549f99194c19566731@o1142418.ingest.sentry.io/6201381",
+    traces_sample_rate=1.0
+)
 
 
 class DateFormatter():
@@ -11,7 +16,8 @@ class DateFormatter():
         today = date.today()
         month = today.strftime("%B")
         day = DateFormatter.remove_leading_zero(today.strftime("%d")).lower()
-        return (f"{month} {day}")
+        # return (f"{month} {day}")
+        return (f"{day} {month}")
 
     def get_current_year():
         today = date.today()
