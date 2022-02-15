@@ -1,11 +1,10 @@
-from selenium import webdriver
 import time
 import re
 import teamDict
 import json
+from dev_config import config
 
-driver = webdriver.Chrome(
-    '/Users/alexolivares/Desktop/items/automate/chromedriver')
+driver = config.driver
 
 print("Loading...")
 
