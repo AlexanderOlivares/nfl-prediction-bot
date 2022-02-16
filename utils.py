@@ -48,7 +48,4 @@ def get_and_format_vegas_line(espn_vegas_lines, predictions, format_outlier_team
                 if fav in predictions:
                     predictions[fav]["favoredBy"] = abs(line)
                     predictions[fav]["avgMinusSpread"] = predictions[fav]["average"] + line
-                else:
-                    print('Favored by team not found in predictions')
-                    quit()
     return predictions
