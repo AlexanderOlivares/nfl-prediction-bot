@@ -6,11 +6,11 @@ import psycopg2
 
 chromdriver_latest_release = requests.get(
     "https://chromedriver.storage.googleapis.com/LATEST_RELEASE").text
-os.environ["CHROMEDRIVER_VERSION"] = chromdriver_latest_release
+if os.environ["CHROMEDRIVER_VERSION"] != chromdriver_latest_release:
+    raise Exception("chromedriver versions do not match")
 
-test_config_var = "test config var"
-os.environ["test_config_var"] = test_config_var
-print(os.environ.get("test_config_var"))
+print("Chromerdriver is version:")
+print(os.environ.get("CHROMEDRIVER_VERSION"))
 
 chrome_options = Options()
 chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
