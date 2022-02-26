@@ -2,6 +2,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+import sentry_sdk
 from nba_team_list import nba_team_list
 from utils import DateFormatter, get_and_format_vegas_line, normal_round, seventysixers_to_sixers
 import os
@@ -238,6 +239,7 @@ try:
 
 except TimeoutException:
     print(str(TimeoutException))
+    sentry_sdk.capture_exception(TimeoutException)
     driver.quit()
 
 finally:

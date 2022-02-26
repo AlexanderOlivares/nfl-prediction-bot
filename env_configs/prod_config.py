@@ -4,13 +4,14 @@ from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 import psycopg2
 
+print("Running Chromerdriver version:")
+print(os.environ.get("CHROMEDRIVER_VERSION"))
+
 chromdriver_latest_release = requests.get(
     "https://chromedriver.storage.googleapis.com/LATEST_RELEASE").text
 if os.environ["CHROMEDRIVER_VERSION"] != chromdriver_latest_release:
-    raise Exception("chromedriver versions do not match")
-
-print("Chromerdriver is version:")
-print(os.environ.get("CHROMEDRIVER_VERSION"))
+    raise Exception(
+        f"chromedriver versions do not match. the latest release is {chromdriver_latest_release}")
 
 chrome_options = Options()
 chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
