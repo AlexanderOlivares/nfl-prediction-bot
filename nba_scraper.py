@@ -47,6 +47,8 @@ try:
     team_and_score = []
     score_count = 0
     for i in oddshark_game_data:
+        if i == "--":
+            raise Exception("No prdicted score published on oddShark")
         for team in nba_team_list:
             team_name = i.split(' ')[-1]
             if team_name == team["simpleName"]:
@@ -122,8 +124,7 @@ try:
             predictions[team]['average'] = normal_round((float(
                 score) + predictions[team]['oddshark']) / 2)
         else:
-            print('Team is not in predictions')
-            driver.quit()
+            raise Exception("Team is not in predictions")
 
     ###############################################################################
     # ESPN BELOW
@@ -241,6 +242,11 @@ try:
 except TimeoutException:
     print(str(TimeoutException))
     sentry_sdk.capture_exception(TimeoutException)
+    driver.quit()
+
+except Exception as e:
+    print(str(e))
+    sentry_sdk.capture_exception(e)
     driver.quit()
 
 finally:
