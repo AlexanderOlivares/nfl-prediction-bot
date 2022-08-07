@@ -74,6 +74,7 @@ for i in oddShark_formatted_data:
         "oddShark": i[1]
     }
 
+print(json.dumps(predictions, indent=4))
 ###############################################################################
 # DRATINGS BELOW
 ###############################################################################
@@ -208,8 +209,9 @@ try:
     conn = config.conn
 
     create_table = (
+        # HARDCODED THE YEAR FOR NOW
         f"""
-        CREATE TABLE nfl{week_of_season}(
+        CREATE TABLE nfl_20222023{week_of_season}( 
         away_team VARCHAR(255),
         away_predicted decimal,
         home_team VARCHAR(255),

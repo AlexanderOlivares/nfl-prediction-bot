@@ -162,7 +162,12 @@ lookup = [
     },
     {
         "code": "WAS",
-        "name": "Team",
-        "full_name": "Washington Football Team"
+        "name": "Commanders",
+        "full_name": "Washington Commanders"
     }
+    # {
+    #     "code": "WAS",
+    #     "name": "Team",
+    #     "full_name": "Washington Football Team"
+    # }
 ]
