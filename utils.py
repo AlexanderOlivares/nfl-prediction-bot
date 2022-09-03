@@ -27,15 +27,11 @@ def seventysixers_to_sixers(teamname_string):
     return "Sixers" if teamname_string == "76ers" else teamname_string
 
 
-def washington_to_team(teamname_string):
-    return "Team" if teamname_string == "Washington" else teamname_string
-
-
 def normal_round(number):
     return int(number + 0.5)
 
 
-def get_and_format_vegas_line(espn_vegas_lines, predictions, format_outlier_teamname):
+def format_vegas_line(espn_vegas_lines, predictions):
     for i in espn_vegas_lines:
         team_name_and_data = i.text.split('\n')
         if len(team_name_and_data) == 2:
@@ -44,7 +40,7 @@ def get_and_format_vegas_line(espn_vegas_lines, predictions, format_outlier_team
             line_list = re.findall(regex_line_finder, data)
             if (len(line_list) == 1):
                 line = float(line_list[0])
-                fav = format_outlier_teamname(full_team_name.split(' ')[-1])
+                fav = full_team_name.split(' ')[-1]
                 if fav in predictions:
                     predictions[fav]["favoredBy"] = abs(line)
                     predictions[fav]["avgMinusSpread"] = predictions[fav]["average"] + line

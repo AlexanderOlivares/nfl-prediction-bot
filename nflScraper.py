@@ -1,4 +1,4 @@
-from utils import get_and_format_vegas_line, washington_to_team
+from utils import format_vegas_line
 import time
 import re
 import teamDict
@@ -86,99 +86,84 @@ try:
         }
 
     print(json.dumps(predictions, indent=4))
+
     ###############################################################################
     # DRATINGS BELOW
+    # dRatings displays games by day. So only thur games are visibible and you
+    # must click a button to the next "scroll page" to view sat/sun/mon games on new pages
     ###############################################################################
-    # driver.execute_script("window.open('');")
-    # driver.switch_to.window(driver.window_handles[1])
-    # driver.get('https://www.dratings.com/predictor/nfl-football-predictions/')
+    driver.execute_script("window.open('');")
+    driver.switch_to.window(driver.window_handles[1])
 
-    # WebDriverWait(driver, 10).until(
-    #     EC.presence_of_element_located((By.CLASS_NAME, "table-body")))
-    # WebDriverWait(driver, 10).until(
-    #     EC.presence_of_element_located((By.CLASS_NAME, "ta--left.tf--body")))
+    dratings_base_url = 'https://www.dratings.com/predictor/nfl-football-predictions/'
 
-    # time.sleep(5)
+    dratings_formatted_data = []
 
-    # dRatings_game_table = driver.find_element_by_class_name('table-body')
+    scroll_page = 0
+    loop_count = 0
 
-    # dRating_team_names = dRatings_game_table.find_elements_by_class_name(
-    #     'ta--left.tf--body')
+    while len(dratings_formatted_data) < total_teams_playing_this_week:
+        if loop_count > 8:
+            raise Exception(
+                "Error breaking dratings loop. Amount of teams playing not matching up")
 
-    # drating_team_name_list = []
-    # for i in dRating_team_names:
-    #     teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
-    #     for i in teams:
-    #         drating_team_name_list.append(i)
+        dratings_scroll_page = f'upcoming/{scroll_page}#scroll-upcoming'
 
-    # dratings_percentages_and_points = dRatings_game_table.find_elements_by_class_name(
-    #     'table-division')
+        driver.get(
+            f'{dratings_base_url}{dratings_scroll_page if scroll_page > 1 else ""}')
 
-    # dratings_predicted_scores = []
-    # for i in dratings_percentages_and_points:
-    #     data_list = i.text.split('\n')
-    #     if len(data_list) > 1:
-    #         for i in data_list:
-    #             if not i.endswith('%'):
-    #                 dratings_predicted_scores.append(float(i))
+        time.sleep(5)
 
-    # dratings_formatted_data = []
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "table-body")))
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "ta--left.tf--body")))
 
-    # for i in range(0, len(drating_team_name_list)):
-    #     dratings_formatted_data.append(
-    #         [drating_team_name_list[i], dratings_predicted_scores[i]])
+        dRatings_game_table = driver.find_element_by_class_name('table-body')
 
-    # time.sleep(5)
+        dRating_team_names = dRatings_game_table.find_elements_by_class_name(
+            'ta--left.tf--body')
 
-    # ###############################################################################
-    # # dRatings displays games by day. So only thur games are visibible and you
-    # # must hit the link below to view sat/sun/mon games on new pages
-    # ###############################################################################
-    # scroll_page = 2
-    # while len(dratings_formatted_data) < total_teams_playing_this_week:
-    #     driver.get(
-    #         f'https://www.dratings.com/predictor/nfl-football-predictions/upcoming/{scroll_page}#scroll-upcoming')
+        drating_team_name_list = []
+        for i in dRating_team_names:
+            teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
+            for team in teams:
+                if team == "Team":
+                    team = "Commanders"
+                drating_team_name_list.append(team)
 
-    #     time.sleep(5)
+        dratings_percentages_and_points = dRatings_game_table.find_elements_by_class_name(
+            'table-division')
 
-    #     dRatings_game_table = driver.find_element_by_class_name('table-body')
+        dratings_predicted_scores = []
+        for i in dratings_percentages_and_points:
+            data_list = i.text.split('\n')
+            if len(data_list) > 1:
+                for i in data_list:
+                    if not i.endswith('%'):
+                        dratings_predicted_scores.append(float(i))
 
-    #     dRating_team_names = dRatings_game_table.find_elements_by_class_name(
-    #         'ta--left.tf--body')
+        for i in range(0, len(drating_team_name_list)):
+            dratings_formatted_data.append(
+                [drating_team_name_list[i], dratings_predicted_scores[i]])
 
-    #     drating_team_name_list = []
-    #     for i in dRating_team_names:
-    #         teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
-    #         for i in teams:
-    #             drating_team_name_list.append(i)
+        if scroll_page == 0:
+            scroll_page = 2
+        else:
+            scroll_page += 1
 
-    #     dratings_percentages_and_points = dRatings_game_table.find_elements_by_class_name(
-    #         'table-division')
+        loop_count += 1
 
-    #     dratings_predicted_scores = []
-    #     for i in dratings_percentages_and_points:
-    #         data_list = i.text.split('\n')
-    #         if len(data_list) > 1:
-    #             for i in data_list:
-    #                 if not i.endswith('%'):
-    #                     dratings_predicted_scores.append(float(i))
+    for i in dratings_formatted_data:
+        if i[0] in predictions:
+            predictions[i[0]]["dRatings"] = i[1]
+        else:
+            predictions[i[0]] = {
+                "dRatings": i[1]
+            }
 
-    #     for i in range(0, len(drating_team_name_list)):
-    #         dratings_formatted_data.append(
-    #             [drating_team_name_list[i], dratings_predicted_scores[i]])
-
-    #     scroll_page += 1
-
-    # for i in dratings_formatted_data:
-    #     if i[0] in predictions:
-    #         predictions[i[0]]["dRatings"] = i[1]
-    #     else:
-    #         predictions[i[0]] = {
-    #             "dRatings": i[1]
-    #         }
-
-    # print(figlet.renderText("dRatings Scores"))
-    # print(dratings_formatted_data)
+    print(figlet.renderText("dRatings Scores"))
+    print(dratings_formatted_data)
 
     for key in predictions:
         dict = predictions[key]
@@ -194,24 +179,28 @@ try:
     # GET VEGAS LINES FROM ESPN
     ###############################################################################
     driver.execute_script("window.open('');")
-    # driver.switch_to.window(driver.window_handles[2])
-    driver.switch_to.window(driver.window_handles[1])
+    driver.switch_to.window(driver.window_handles[2])
     driver.get('https://www.espn.com/nfl/lines')
+    time.sleep(3)
+
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.CLASS_NAME, "Table__TR")))
 
     espn_vegas_lines = driver.find_elements_by_class_name('Table__TR')
 
-    predictions = get_and_format_vegas_line(
-        espn_vegas_lines, predictions, washington_to_team)
+    predictions = format_vegas_line(
+        espn_vegas_lines, predictions)
 
     ###############################################################################
     # ORDER PREDICTIONS BY CURRENT WEEKLY MATCHUP
     ###############################################################################
     driver.execute_script("window.open('');")
-    # driver.switch_to.window(driver.window_handles[3])
-    driver.switch_to.window(driver.window_handles[2])
+    driver.switch_to.window(driver.window_handles[3])
     driver.get('https://www.nfl.com/schedules/')
-
     time.sleep(3)
+
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "main-content")))
 
     nfl_com_schedule = driver.find_element_by_id("main-content")
     nfl_com_sched = nfl_com_schedule.text.split('\n')
