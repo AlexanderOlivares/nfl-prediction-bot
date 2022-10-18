@@ -4,7 +4,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 import sentry_sdk
 from nba_team_list import nba_team_list
-from utils import DateFormatter, get_and_format_vegas_line, normal_round, seventysixers_to_sixers
+from utils import DateFormatter, format_vegas_line, normal_round, seventysixers_to_sixers
 import os
 import re
 import json
@@ -148,8 +148,8 @@ try:
 
     espn_vegas_lines = driver.find_elements_by_class_name('Table__TR')
 
-    spread_predictions = get_and_format_vegas_line(
-        espn_vegas_lines, predictions, seventysixers_to_sixers)
+    spread_predictions = format_vegas_line(
+        espn_vegas_lines, predictions)
 
     print(json.dumps(spread_predictions, indent=4))
 
