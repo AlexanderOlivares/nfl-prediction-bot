@@ -40,7 +40,7 @@ def format_vegas_line(espn_vegas_lines, predictions):
             line_list = re.findall(regex_line_finder, data)
             if (len(line_list) == 1):
                 line = float(line_list[0])
-                fav = full_team_name.split(' ')[-1]
+                fav = seventysixers_to_sixers(full_team_name.split(' ')[-1])
                 if fav in predictions:
                     predictions[fav]["favoredBy"] = abs(line)
                     predictions[fav]["avgMinusSpread"] = predictions[fav]["average"] + line
