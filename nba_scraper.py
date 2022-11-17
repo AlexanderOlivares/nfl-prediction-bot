@@ -146,7 +146,6 @@ try:
     time.sleep(10)
 
     get_espn_date = driver.find_element_by_class_name(
-        # 'Table__Title margin-subtitle').text
         'Table__Title.margin-subtitle').text
     print(get_espn_date)
     t = re.findall(f"{match_date_regex}", get_espn_date)
