@@ -144,8 +144,10 @@ try:
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.CLASS_NAME, "Table__Title.margin-subtitle")))
 
-    get_espn_date = driver.find_element_by_class_name(
-        'Table__Title.margin-subtitle').text
+    get_espn_date = driver.find_element_by_xpath(
+        '//*[@id="fittPageContainer"]/div[3]/div/div[1]/section/div/div[3]/div[1]')
+    # get_espn_date = driver.find_element_by_class_name(
+    #     'Table__Title.margin-subtitle').text
     print(get_espn_date)
     t = re.findall(f"{match_date_regex}", get_espn_date)
     print(t)
