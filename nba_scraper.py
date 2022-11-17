@@ -38,8 +38,8 @@ try:
         rf"{match_date_regex}", get_oddshark_date)[0]
 
     todays_date = DateFormatter.get_todays_date()
-    print(f'todays date from python {todays_date}')
-    print(f'odd shark game date {oddshark_game_date}')
+    print(f'todays date from python ---{todays_date}--')
+    print(f'odd shark game date ---{oddshark_game_date}---')
     if oddshark_game_date != todays_date:
         raise Exception("Game dates do not match")
 
