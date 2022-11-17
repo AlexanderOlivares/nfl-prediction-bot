@@ -137,13 +137,12 @@ try:
     driver.switch_to.window(driver.window_handles[2])
     driver.get('https://www.espn.com/nba/lines')
 
+    time.sleep(10)
+
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.CLASS_NAME, "Table__TR")))
     WebDriverWait(driver, 10).until(
-        # EC.presence_of_element_located((By.CLASS_NAME, "Table__Title margin-subtitle")))
         EC.presence_of_element_located((By.CLASS_NAME, "Table__Title.margin-subtitle")))
-
-    time.sleep(10)
 
     get_espn_date = driver.find_element_by_class_name(
         'Table__Title.margin-subtitle').text
