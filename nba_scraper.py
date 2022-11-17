@@ -140,13 +140,18 @@ try:
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.CLASS_NAME, "Table__TR")))
     WebDriverWait(driver, 10).until(
+        # EC.presence_of_element_located((By.CLASS_NAME, "Table__Title margin-subtitle")))
         EC.presence_of_element_located((By.CLASS_NAME, "Table__Title.margin-subtitle")))
 
-    time.sleep(5)
+    time.sleep(10)
 
     get_espn_date = driver.find_element_by_class_name(
+        # 'Table__Title margin-subtitle').text
         'Table__Title.margin-subtitle').text
-    espn_date = re.findall(rf"{match_date_regex}", get_espn_date)[0]
+    print(get_espn_date)
+    t = re.findall(f"{match_date_regex}", get_espn_date)
+    print(t)
+    espn_date = re.findall(f"{match_date_regex}", get_espn_date)[0]
     print(f'todays date from python ---{todays_date}---')
     print(f'espn game date ---{espn_date}---')
     if espn_date != todays_date:
