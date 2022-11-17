@@ -148,9 +148,6 @@ try:
         '//*[@id="fittPageContainer"]/div[3]/div/div[1]/section/div/div[3]/div[1]')
     # get_espn_date = driver.find_element_by_class_name(
     #     'Table__Title.margin-subtitle').text
-    # print(get_espn_date)
-    # t = re.findall(f"{match_date_regex}", get_espn_date.text)
-    # print(t)
     espn_date = re.findall(f"{match_date_regex}", get_espn_date.text)[0]
     print(f'todays date from python ---{todays_date}---')
     print(f'espn game date ---{espn_date}---')
