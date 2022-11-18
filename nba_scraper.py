@@ -91,7 +91,6 @@ try:
 
     get_dratings_date = driver.find_element_by_class_name('heading-3').text
     dratings_date = re.findall(rf"{match_date_regex}", get_dratings_date)[0]
-    print(f'todays date from python ---{todays_date}---')
     print(f'dratings game date ---{dratings_date}---')
     if dratings_date != todays_date:
         raise Exception("Game dates do not match")
@@ -150,10 +149,9 @@ try:
     #     'Table__Title.margin-subtitle').text
 
     espn_date = re.findall(f"{match_date_regex}", get_espn_date.text)[0]
-    print(f'todays date from python ---{todays_date}---')
     print(f'espn game date ---{espn_date}---')
-    # if espn_date != todays_date:
-    #     raise Exception("Game dates do not match")
+    if espn_date != todays_date:
+        raise Exception("Game dates do not match")
 
     espn_vegas_lines = driver.find_elements_by_class_name('Table__TR')
 
