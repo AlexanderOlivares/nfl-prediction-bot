@@ -152,8 +152,8 @@ try:
     espn_date = re.findall(f"{match_date_regex}", get_espn_date.text)[0]
     print(f'todays date from python ---{todays_date}---')
     print(f'espn game date ---{espn_date}---')
-    if espn_date != todays_date:
-        raise Exception("Game dates do not match")
+    # if espn_date != todays_date:
+    #     raise Exception("Game dates do not match")
 
     espn_vegas_lines = driver.find_elements_by_class_name('Table__TR')
 
