@@ -27,7 +27,7 @@ try:
         create_table = (
             f"""
             CREATE TABLE IF NOT EXISTS write_test( 
-            version VARCHAR(255),
+            version VARCHAR(255)
             )
             """
         )
