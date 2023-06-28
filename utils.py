@@ -1,8 +1,9 @@
 import re
+import os
 from datetime import date
 import sentry_sdk
 sentry_sdk.init(
-    "https://83c08311544246549f99194c19566731@o1142418.ingest.sentry.io/6201381",
+    os.environ.get("SENTRY_DSN"),
     traces_sample_rate=1.0
 )
 
