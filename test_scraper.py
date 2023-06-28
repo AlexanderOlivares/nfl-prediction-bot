@@ -35,7 +35,7 @@ try:
         cur.execute(create_table)
         conn.commit()
 
-        insert_command = f'INSERT INTO write_test (message) VALUES (%s)'
+        insert_command = f'INSERT INTO write_test (version) VALUES (%s)'
         insert_values = (text)
         cur.execute(insert_command, insert_values)
 
