@@ -35,13 +35,13 @@ try:
         cur.execute(create_table)
         conn.commit()
 
-        insert_command = f'INSERT INTO write_test (version) VALUES (%s)'
-        insert_values = (text,)
-        cur.execute(insert_command, insert_values)
+        # insert_command = f'INSERT INTO write_test (version) VALUES (%s)'
+        # insert_values = (text,)
+        # cur.execute(insert_command, insert_values)
 
-        # insert_command = f'UPDATE write_test SET version = (%s) WHERE version = (%s)'
-        # insert_value = ('jaxx wuz here', text)
-        # cur.execute(insert_command, insert_value)
+        insert_command = f'UPDATE write_test SET version = (%s) WHERE version = (%s)'
+        insert_value = ('jaxx wuz here', text)
+        cur.execute(insert_command, insert_value)
 
         conn.commit()
     except Exception as error:
