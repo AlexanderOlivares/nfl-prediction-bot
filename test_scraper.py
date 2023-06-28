@@ -36,11 +36,11 @@ try:
         conn.commit()
 
         insert_command = f'INSERT INTO write_test (version) VALUES (%s)'
-        insert_values = (text)
+        insert_values = (text,)
         cur.execute(insert_command, insert_values)
 
-        # insert_command = f'UPDATE write_test SET message = (%s) WHERE message = (%s)'
-        # insert_value = ('jaxx wuz here', 'alex wuz here')
+        # insert_command = f'UPDATE write_test SET version = (%s) WHERE version = (%s)'
+        # insert_value = ('jaxx wuz here', text)
         # cur.execute(insert_command, insert_value)
 
         conn.commit()
