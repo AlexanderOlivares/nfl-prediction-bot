@@ -82,7 +82,8 @@ try:
 
     for i in oddShark_formatted_data:
         predictions[i[0]] = {
-            "oddShark": i[1]
+            "oddShark": i[1],
+            "average": i[1]  # remove this after preseason
         }
 
     print(json.dumps(predictions, indent=4))

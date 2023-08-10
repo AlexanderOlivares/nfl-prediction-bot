@@ -1,4 +1,4 @@
-name: Run test scraper
+name: Run nfl scraper
 
 on:
   workflow_dispatch:
