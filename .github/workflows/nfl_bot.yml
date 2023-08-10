@@ -36,4 +36,4 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           PRODUCTION: ${{ secrets.PRODUCTION }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-        run: python test_scraper.py
+        run: python nflScraper.py
