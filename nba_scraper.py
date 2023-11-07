@@ -146,7 +146,7 @@ try:
     get_espn_date = driver.find_element_by_xpath(
         '//*[@id="fittPageContainer"]/div[3]/div/div[1]/section/div/div[3]/div[1]')
     get_espn_date_test = driver.find_element_by_class_name(
-        'Table__Title.margin-subtitle').text
+        'Table__Title.margin-subtitle')
     get_espn_date_test_2 = driver.find_element_by_xpath(
         '/html/body/div[1]/div/div/div/main/div[3]/div/div[1]/section/div/div[3]/div[1]')
 
