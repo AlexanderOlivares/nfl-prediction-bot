@@ -92,8 +92,8 @@ try:
     get_dratings_date = driver.find_element_by_class_name('heading-3').text
     dratings_date = re.findall(rf"{match_date_regex}", get_dratings_date)[0]
     print(f'dratings game date ---{dratings_date}---')
-    if dratings_date != todays_date:
-        raise Exception("Game dates do not match")
+    # if dratings_date != todays_date:
+    #     raise Exception("Game dates do not match")
 
     get_game_table = driver.find_element_by_id("scroll-upcoming")
 
