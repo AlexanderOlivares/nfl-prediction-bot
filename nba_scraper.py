@@ -145,11 +145,17 @@ try:
 
     get_espn_date = driver.find_element_by_xpath(
         '//*[@id="fittPageContainer"]/div[3]/div/div[1]/section/div/div[3]/div[1]')
-    # get_espn_date = driver.find_element_by_class_name(
-    #     'Table__Title.margin-subtitle').text
+    get_espn_date_test = driver.find_element_by_class_name(
+        'Table__Title.margin-subtitle').text
+    get_espn_date_test_2 = driver.find_element_by_xpath(
+        '/html/body/div[1]/div/div/div/main/div[3]/div/div[1]/section/div/div[3]/div[1]')
 
     espn_date = re.findall(f"{match_date_regex}", get_espn_date.text)[0]
+    espn_date_test = re.findall(f"{match_date_regex}", get_espn_date_test.text)[0]
+    espn_date_test_2 = re.findall(f"{match_date_regex}", get_espn_date_test_2.text)[0]
     print(f'espn game date ---{espn_date}---')
+    print(f'espn game date test ---{espn_date_test}---')
+    print(f'espn game date test2 ---{espn_date_test_2}---')
     if espn_date != todays_date:
         raise Exception("Game dates do not match")
 
