@@ -23,117 +23,117 @@ try:
     ###############################################################################
     # ODD SHARK BELOW
     ###############################################################################
-    driver.get('https://www.oddsshark.com/nba/scores')
+    # driver.get('https://www.oddsshark.com/nba/scores')
 
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.ID, "oslive-scoreboard")))
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "header-text")))
+    # WebDriverWait(driver, 10).until(
+    #     EC.presence_of_element_located((By.ID, "oslive-scoreboard")))
+    # WebDriverWait(driver, 10).until(
+    #     EC.presence_of_element_located((By.CLASS_NAME, "header-text")))
 
-    time.sleep(5)
+    # time.sleep(5)
 
-    get_oddshark_date = driver.find_element_by_class_name('header-text').text
-    match_date_regex = '[A-Z]\w+\s\d{1,2}'
-    oddshark_game_date = re.findall(
-        rf"{match_date_regex}", get_oddshark_date)[0]
+    # get_oddshark_date = driver.find_element_by_class_name('header-text').text
+    # match_date_regex = '[A-Z]\w+\s\d{1,2}'
+    # oddshark_game_date = re.findall(
+    #     rf"{match_date_regex}", get_oddshark_date)[0]
 
-    todays_date = DateFormatter.get_todays_date()
-    print(f'python date ---{todays_date}---')
-    print(f'odd shark game date ---{oddshark_game_date}---')
-    if oddshark_game_date != todays_date:
-        raise Exception("Game dates do not match")
+    # todays_date = DateFormatter.get_todays_date()
+    # print(f'python date ---{todays_date}---')
+    # print(f'odd shark game date ---{oddshark_game_date}---')
+    # if oddshark_game_date != todays_date:
+    #     raise Exception("Game dates do not match")
 
-    scoreboard = driver.find_element_by_id("oslive-scoreboard")
-    oddshark_game_data = scoreboard.text.split('\n')
+    # scoreboard = driver.find_element_by_id("oslive-scoreboard")
+    # oddshark_game_data = scoreboard.text.split('\n')
 
-    team_and_score = []
-    score_count = 0
-    for i in oddshark_game_data:
-        if i == "--":
-            raise Exception("No prdicted score published on oddShark")
-        for team in nba_team_list:
-            team_name = i.split(' ')[-1]
-            if team_name == team["simpleName"]:
-                team_and_score.append(team_name)
-        predicted_score = re.findall("^\d{2,3}\.?\d*$", i)
-        if predicted_score:
-            if score_count < 2:
-                team_and_score.append(predicted_score[0])
-                score_count += 1
-            else:
-                score_count = 0
+    # team_and_score = []
+    # score_count = 0
+    # for i in oddshark_game_data:
+    #     if i == "--":
+    #         raise Exception("No prdicted score published on oddShark")
+    #     for team in nba_team_list:
+    #         team_name = i.split(' ')[-1]
+    #         if team_name == team["simpleName"]:
+    #             team_and_score.append(team_name)
+    #     predicted_score = re.findall("^\d{2,3}\.?\d*$", i)
+    #     if predicted_score:
+    #         if score_count < 2:
+    #             team_and_score.append(predicted_score[0])
+    #             score_count += 1
+    #         else:
+    #             score_count = 0
 
-    for i in range(len(team_and_score) - 2):
-        is_team_name = re.findall("[^0-9\.]", team_and_score[i])
-        if is_team_name:
-            team_name = seventysixers_to_sixers(team_and_score[i])
-            predictions[team_name] = {
-                "oddshark": float(team_and_score[i + 2])
-            }
+    # for i in range(len(team_and_score) - 2):
+    #     is_team_name = re.findall("[^0-9\.]", team_and_score[i])
+    #     if is_team_name:
+    #         team_name = seventysixers_to_sixers(team_and_score[i])
+    #         predictions[team_name] = {
+    #             "oddshark": float(team_and_score[i + 2])
+    #         }
 
-    ###############################################################################
-    # DRATINGS BELOW
-    ###############################################################################
-    driver.execute_script("window.open('');")
-    driver.switch_to.window(driver.window_handles[1])
-    driver.get('https://www.dratings.com/predictor/nba-basketball-predictions/')
+    # ###############################################################################
+    # # DRATINGS BELOW
+    # ###############################################################################
+    # driver.execute_script("window.open('');")
+    # driver.switch_to.window(driver.window_handles[1])
+    # driver.get('https://www.dratings.com/predictor/nba-basketball-predictions/')
 
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "table-division")))
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "ta--left.tf--body")))
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "heading-3")))
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.ID, "scroll-upcoming")))
+    # WebDriverWait(driver, 10).until(
+    #     EC.presence_of_element_located((By.CLASS_NAME, "table-division")))
+    # WebDriverWait(driver, 10).until(
+    #     EC.presence_of_element_located((By.CLASS_NAME, "ta--left.tf--body")))
+    # WebDriverWait(driver, 10).until(
+    #     EC.presence_of_element_located((By.CLASS_NAME, "heading-3")))
+    # WebDriverWait(driver, 10).until(
+    #     EC.presence_of_element_located((By.ID, "scroll-upcoming")))
 
-    time.sleep(5)
+    # time.sleep(5)
 
-    get_dratings_date = driver.find_element_by_class_name('heading-3').text
-    dratings_date = re.findall(rf"{match_date_regex}", get_dratings_date)[0]
-    print(f'dratings game date ---{dratings_date}---')
+    # get_dratings_date = driver.find_element_by_class_name('heading-3').text
+    # dratings_date = re.findall(rf"{match_date_regex}", get_dratings_date)[0]
+    # print(f'dratings game date ---{dratings_date}---')
     # if dratings_date != todays_date:
     #     raise Exception("Game dates do not match")
 
-    get_game_table = driver.find_element_by_id("scroll-upcoming")
+    # get_game_table = driver.find_element_by_id("scroll-upcoming")
 
-    scrape_teams = get_game_table.find_elements_by_class_name(
-        "ta--left.tf--body")
-    scrape_scores = get_game_table.find_elements_by_class_name(
-        "table-division")
+    # scrape_teams = get_game_table.find_elements_by_class_name(
+    #     "ta--left.tf--body")
+    # scrape_scores = get_game_table.find_elements_by_class_name(
+    #     "table-division")
 
-    dratings_teams = []
-    for i in scrape_teams:
-        matchup_list = i.text.split('\n')
-        for team in matchup_list:
-            is_team_name = re.findall("\w+(?=\s\(\d{1,2}\-\d{1,2}\))", team)
-            if is_team_name:
-                team_name = seventysixers_to_sixers(is_team_name[0])
-                dratings_teams.append(team_name)
+    # dratings_teams = []
+    # for i in scrape_teams:
+    #     matchup_list = i.text.split('\n')
+    #     for team in matchup_list:
+    #         is_team_name = re.findall("\w+(?=\s\(\d{1,2}\-\d{1,2}\))", team)
+    #         if is_team_name:
+    #             team_name = seventysixers_to_sixers(is_team_name[0])
+    #             dratings_teams.append(team_name)
 
-    dratings_scores = []
-    for i in scrape_scores:
-        split_mulitline_scores = i.text.split('\n')
-        if (len(split_mulitline_scores) > 1):
-            score_one, score_two = split_mulitline_scores
-            for score in split_mulitline_scores:
-                if not score.endswith('%'):
-                    dratings_scores.append(score)
+    # dratings_scores = []
+    # for i in scrape_scores:
+    #     split_mulitline_scores = i.text.split('\n')
+    #     if (len(split_mulitline_scores) > 1):
+    #         score_one, score_two = split_mulitline_scores
+    #         for score in split_mulitline_scores:
+    #             if not score.endswith('%'):
+    #                 dratings_scores.append(score)
 
-    dratings_teams_and_scores = zip(dratings_teams, dratings_scores)
-    for team, score in dratings_teams_and_scores:
-        if team in predictions:
-            predictions[team]['dratings'] = float(score)
-            predictions[team]['average'] = normal_round((float(
-                score) + predictions[team]['oddshark']) / 2)
-        else:
-            raise Exception("Team is not in predictions")
+    # dratings_teams_and_scores = zip(dratings_teams, dratings_scores)
+    # for team, score in dratings_teams_and_scores:
+    #     if team in predictions:
+    #         predictions[team]['dratings'] = float(score)
+    #         predictions[team]['average'] = normal_round((float(
+    #             score) + predictions[team]['oddshark']) / 2)
+    #     else:
+    #         raise Exception("Team is not in predictions")
 
     ###############################################################################
     # ESPN BELOW
     ###############################################################################
-    driver.execute_script("window.open('');")
-    driver.switch_to.window(driver.window_handles[2])
+    # driver.execute_script("window.open('');")
+    # driver.switch_to.window(driver.window_handles[2])
     driver.get('https://www.espn.com/nba/lines')
 
     time.sleep(10)
