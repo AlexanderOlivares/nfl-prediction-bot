@@ -156,6 +156,7 @@ try:
     print(f'espn game date ---{espn_date}---')
     print(f'espn game date test ---{espn_date_test}---')
     print(f'espn game date test2 ---{espn_date_test_2}---')
+    print(get_espn_date.text)
     if espn_date != todays_date:
         raise Exception("Game dates do not match")
 
