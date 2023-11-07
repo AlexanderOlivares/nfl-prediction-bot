@@ -33,11 +33,11 @@ try:
     # time.sleep(5)
 
     # get_oddshark_date = driver.find_element_by_class_name('header-text').text
-    # match_date_regex = '[A-Z]\w+\s\d{1,2}'
+    match_date_regex = '[A-Z]\w+\s\d{1,2}'
     # oddshark_game_date = re.findall(
     #     rf"{match_date_regex}", get_oddshark_date)[0]
 
-    # todays_date = DateFormatter.get_todays_date()
+    todays_date = DateFormatter.get_todays_date()
     # print(f'python date ---{todays_date}---')
     # print(f'odd shark game date ---{oddshark_game_date}---')
     # if oddshark_game_date != todays_date:
