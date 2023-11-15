@@ -35,9 +35,12 @@ def normal_round(number):
 def format_vegas_line(espn_vegas_lines, predictions):
     for i in espn_vegas_lines:
         team_name_and_data = i.text.split('\n')
+        print(team_name_and_data)
         if len(team_name_and_data) == 2:
             full_team_name, data = team_name_and_data
             regex_line_finder = '(?<=\) )\-\d+\.\d{1}'
+            print(full_team_name)
+            print(data)
             line_list = re.findall(regex_line_finder, data)
             if (len(line_list) == 1):
                 line = float(line_list[0])

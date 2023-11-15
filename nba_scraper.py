@@ -165,6 +165,8 @@ try:
     spread_predictions = format_vegas_line(
         espn_vegas_lines, predictions)
 
+    print("espn_vegas_lines vvv")
+    print(espn_vegas_lines)
     print(json.dumps(spread_predictions, indent=4))
 
     matchups = []
