@@ -234,6 +234,7 @@ try:
 
     for dict in result:
         for team, line in dict.items():
+            print(team)
             if team in predictions:
                 # Assuming your string
                 input_string = "CLE -1.0"
@@ -248,6 +249,9 @@ try:
 
                 # The last part of the split string is the floating-point number
                 line_float = float(parts[-1])
+                print(line_float)
+                print(favorite_abbrv)
+                print(favored_team)
                 if favored_team in predictions:
                     predictions[favored_team]["favoredBy"] = abs(line_float)
                     predictions[favored_team]["avgMinusSpread"] = predictions[favored_team]["average"] + line_float
