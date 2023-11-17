@@ -233,14 +233,14 @@ try:
     
 
     for dict in result:
-        for team, line in dict.items():
+        for i in dict.items():
             print(team)
-            if team in predictions:
+            if i["team"] in predictions:
                 # Assuming your string
                 input_string = "CLE -1.0"
 
                 # Split the string based on space
-                parts = line.split()
+                parts = i["line"].split(" ")
                 favorite_abbrv = parts[0]
                 favored_team = ""
                 for team_dict in teamDict.lookup: 
