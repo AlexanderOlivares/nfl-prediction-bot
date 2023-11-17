@@ -212,7 +212,8 @@ try:
     response = requests.get(url)
     espn_lines_response = response.json()
 
-    events = espn_lines_response.events
+    events = espn_lines_response['events']
+
     # events.map(event=> {
     #     return {
     #     team: event.competitions[0].competitors[0].team.shortDisplayName,
