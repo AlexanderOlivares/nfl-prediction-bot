@@ -166,15 +166,15 @@ try:
     print(figlet.renderText("dRatings Scores"))
     print(dratings_formatted_data)
 
-    for key in predictions:
-        dict = predictions[key]
+    for team in predictions:
+        dict = predictions[team]
         total = 0
         total_predictions = 0
         for i in dict:
             total += dict[i]
             total_predictions += 1
         average = round(total / total_predictions)
-        predictions[key]["average"] = average
+        predictions[team]["average"] = average
 
     ###############################################################################
     # GET VEGAS LINES FROM ESPN
@@ -185,28 +185,14 @@ try:
     driver.get('https://www.espn.com/nfl/lines')
     time.sleep(3)
 
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "Table__TR")))
+    # WebDriverWait(driver, 10).until(
+    #     EC.presence_of_element_located((By.CLASS_NAME, "Table__TR")))
 
     # espn_vegas_lines = driver.find_elements_by_class_name('Table__TR')
-    espn_vegas_lines = driver.find_elements_by_class_name('Table__TR Table__TR--sm Table__even')
+    # espn_vegas_lines = driver.find_elements_by_class_name('Table__TR Table__TR--sm Table__even')
 
-    predictions = format_vegas_line(
-        espn_vegas_lines, predictions)
-
-    ###############################################################################
-    # ORDER PREDICTIONS BY CURRENT WEEKLY MATCHUP
-    ###############################################################################
-    driver.execute_script("window.open('');")
-    driver.switch_to.window(driver.window_handles[3])
-    driver.get('https://www.nfl.com/schedules/')
-    time.sleep(3)
-
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.ID, "main-content")))
-
-    nfl_com_schedule = driver.find_element_by_id("main-content")
-    nfl_com_sched = nfl_com_schedule.text.split('\n')
+    # predictions = format_vegas_line(
+    #     espn_vegas_lines, predictions)
 
     url = f"https://site.web.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard"
     response = requests.get(url)
@@ -230,6 +216,56 @@ try:
 
     print(json.dumps(result, indent=4))
 
+    # [
+    # {
+    #     "team": "Ravens",
+    #     "line": "BAL -4.0"
+    # },
+    # {
+    #     "team": "Browns",
+    #     "line": "CLE -1.0"
+    # },
+    # {
+    #     "team": "Lions",
+    #     "line": "DET -7.5"
+    # },
+    # ]
+    
+
+    for dict in result:
+        for team, line in dict.items():
+            if team in predictions:
+                # Assuming your string
+                input_string = "CLE -1.0"
+
+                # Split the string based on space
+                parts = line.split()
+                favorite_abbrv = parts[0]
+                favored_team = ""
+                for team_dict in teamDict.lookup: 
+                    if team_dict["code"] == favorite_abbrv:
+                        favored_team = team_dict["name"]
+
+                # The last part of the split string is the floating-point number
+                line_float = float(parts[-1])
+                if favored_team in predictions:
+                    predictions[favored_team]["favoredBy"] = abs(line_float)
+                    predictions[favored_team]["avgMinusSpread"] = predictions[favored_team]["average"] + line_float
+
+
+    ###############################################################################
+    # ORDER PREDICTIONS BY CURRENT WEEKLY MATCHUP
+    ###############################################################################
+    driver.execute_script("window.open('');")
+    driver.switch_to.window(driver.window_handles[3])
+    driver.get('https://www.nfl.com/schedules/')
+    time.sleep(3)
+
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "main-content")))
+
+    nfl_com_schedule = driver.find_element_by_id("main-content")
+    nfl_com_sched = nfl_com_schedule.text.split('\n')
 
     ###############################################################################
     # WRITE TO DB
