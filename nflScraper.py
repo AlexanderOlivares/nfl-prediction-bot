@@ -341,7 +341,8 @@ try:
                     cur.execute(insert_command, insert_value)
                 else:
                     dog_team = team_name
-                    dog_avg = predictions[team_name]["average"]
+                    # dog_avg = predictions[team_name]["average"]
+                    dog_avg = predictions[team_name]["oddShark"]
             pick = ""
             if avg_minus_spread == dog_avg:
                 pick = f"PUSH {fav_team} vs {dog_team}"
