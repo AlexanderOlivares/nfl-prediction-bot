@@ -200,63 +200,44 @@ try:
 
     events = espn_lines_response['events']
 
-    # events.map(event=> {
-    #     return {
-    #     team: event.competitions[0].competitors[0].team.shortDisplayName,
-    #     line: event.competitions[0].odds[0].details
-    #     }
-    # })
     result = [
     {
         "team": event["competitions"][0]["competitors"][0]["team"]["shortDisplayName"],
-        "line": event["competitions"][0]["odds"][0]["details"]
+        # "line": event["competitions"][0]["odds"][0]["details"]
+        "line": event["competitions"][0]["odds"][0]["details"] if "odds" in event["competitions"][0] and event["competitions"][0]["odds"] else "BAL -4"
     }
         for event in events
     ]
 
     print(json.dumps(result, indent=4))
 
-    # [
-    # {
-    #     "team": "Ravens",
-    #     "line": "BAL -4.0"
-    # },
-    # {
-    #     "team": "Browns",
-    #     "line": "CLE -1.0"
-    # },
-    # {
-    #     "team": "Lions",
-    #     "line": "DET -7.5"
-    # },
-    # ]
-    
 
-    # Baltimore Ravens	-4.0
+    def round_to_half(number):
+        return round(number * 2) / 2
 
     for dict in result:
-        # for key, val in dict.items():
-            # print(team)
-        if dict["team"] in predictions:
-            # Assuming your string
-            input_string = "CLE -1.0"
+            # for key, val in dict.items():
+                # print(team)
+            if dict["team"] in predictions:
+                # Assuming your string
+                input_string = "CLE -1.0"
 
-            # Split the string based on space
-            parts = dict["line"].split(" ")
-            favorite_abbrv = parts[0]
-            favored_team = ""
-            for team_dict in teamDict.lookup: 
-                if team_dict["code"] == favorite_abbrv:
-                    favored_team = team_dict["name"]
+                # Split the string based on space
+                parts = dict["line"].split(" ")
+                favorite_abbrv = parts[0]
+                favored_team = ""
+                for team_dict in teamDict.lookup: 
+                    if team_dict["code"] == favorite_abbrv:
+                        favored_team = team_dict["name"]
 
-            # The last part of the split string is the floating-point number
-            line_float = float(parts[-1])
-            print(line_float)
-            print(favorite_abbrv)
-            print(favored_team)
-            if favored_team in predictions:
-                predictions[favored_team]["favoredBy"] = abs(line_float)
-                predictions[favored_team]["avgMinusSpread"] = predictions[favored_team]["average"] + line_float
+                # The last part of the split string is the floating-point number
+                line_float = float(parts[-1])
+                print(line_float)
+                print(favorite_abbrv)
+                print(favored_team)
+                if favored_team in predictions:
+                    predictions[favored_team]["favoredBy"] = abs(line_float)
+                    predictions[favored_team]["avgMinusSpread"] = round_to_half(predictions[favored_team]["oddShark"] + line_float) 
 
 
     ###############################################################################

@@ -161,7 +161,7 @@ lookup = [
         "full_name": "Tennessee Titans"
     },
     {
-        "code": "WAS",
+        "code": "WSH",
         "name": "Commanders",
         "full_name": "Washington Commanders"
     }
