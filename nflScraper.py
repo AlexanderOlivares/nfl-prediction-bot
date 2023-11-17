@@ -93,88 +93,88 @@ try:
     # dRatings displays games by day. So only thur games are visible and you
     # must click a button to the next "scroll page" to view sat/sun/mon games on new pages
     ###############################################################################
-    # driver.execute_script("window.open('');")
-    # driver.switch_to.window(driver.window_handles[1])
+    driver.execute_script("window.open('');")
+    driver.switch_to.window(driver.window_handles[1])
 
-    # dratings_base_url = 'https://www.dratings.com/predictor/nfl-football-predictions/'
+    dratings_base_url = 'https://www.dratings.com/predictor/nfl-football-predictions/'
 
-    # dratings_formatted_data = []
+    dratings_formatted_data = []
 
-    # scroll_page = 0
-    # loop_count = 0
+    scroll_page = 0
+    loop_count = 0
 
-    # while len(dratings_formatted_data) < total_teams_playing_this_week:
-    #     if loop_count > 8:
-    #         raise Exception(
-    #             "Error breaking dratings loop. Amount of teams playing not matching up")
+    while len(dratings_formatted_data) < total_teams_playing_this_week:
+        if loop_count > 8:
+            raise Exception(
+                "Error breaking dratings loop. Amount of teams playing not matching up")
 
-    #     dratings_scroll_page = f'upcoming/{scroll_page}#scroll-upcoming'
+        dratings_scroll_page = f'upcoming/{scroll_page}#scroll-upcoming'
 
-    #     driver.get(
-    #         f'{dratings_base_url}{dratings_scroll_page if scroll_page > 1 else ""}')
+        driver.get(
+            f'{dratings_base_url}{dratings_scroll_page if scroll_page > 1 else ""}')
 
-    #     time.sleep(5)
+        time.sleep(5)
 
-    #     WebDriverWait(driver, 10).until(
-    #         EC.presence_of_element_located((By.CLASS_NAME, "table-body")))
-    #     WebDriverWait(driver, 10).until(
-    #         EC.presence_of_element_located((By.CLASS_NAME, "ta--left.tf--body")))
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "table-body")))
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "ta--left.tf--body")))
 
-    #     dRatings_game_table = driver.find_element_by_class_name('table-body')
+        dRatings_game_table = driver.find_element_by_class_name('table-body')
 
-    #     dRating_team_names = dRatings_game_table.find_elements_by_class_name(
-    #         'ta--left.tf--body')
+        dRating_team_names = dRatings_game_table.find_elements_by_class_name(
+            'ta--left.tf--body')
 
-    #     drating_team_name_list = []
-    #     for i in dRating_team_names:
-    #         teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
-    #         for team in teams:
-    #             if team == "Team":
-    #                 team = "Commanders"
-    #             drating_team_name_list.append(team)
+        drating_team_name_list = []
+        for i in dRating_team_names:
+            teams = re.findall('\w+(?= \(\d+-\d+(?:-\d+)?\))', i.text)
+            for team in teams:
+                if team == "Team":
+                    team = "Commanders"
+                drating_team_name_list.append(team)
 
-    #     dratings_percentages_and_points = dRatings_game_table.find_elements_by_class_name(
-    #         'table-division')
+        dratings_percentages_and_points = dRatings_game_table.find_elements_by_class_name(
+            'table-division')
 
-    #     dratings_predicted_scores = []
-    #     for i in dratings_percentages_and_points:
-    #         data_list = i.text.split('\n')
-    #         if len(data_list) > 1:
-    #             for i in data_list:
-    #                 if not i.endswith('%'):
-    #                     dratings_predicted_scores.append(float(i))
+        dratings_predicted_scores = []
+        for i in dratings_percentages_and_points:
+            data_list = i.text.split('\n')
+            if len(data_list) > 1:
+                for i in data_list:
+                    if not i.endswith('%'):
+                        dratings_predicted_scores.append(float(i))
 
-    #     for i in range(0, len(drating_team_name_list)):
-    #         dratings_formatted_data.append(
-    #             [drating_team_name_list[i], dratings_predicted_scores[i]])
+        for i in range(0, len(drating_team_name_list)):
+            dratings_formatted_data.append(
+                [drating_team_name_list[i], dratings_predicted_scores[i]])
 
-    #     if scroll_page == 0:
-    #         scroll_page = 2
-    #     else:
-    #         scroll_page += 1
+        if scroll_page == 0:
+            scroll_page = 2
+        else:
+            scroll_page += 1
 
-    #     loop_count += 1
+        loop_count += 1
 
-    # for i in dratings_formatted_data:
-    #     if i[0] in predictions:
-    #         predictions[i[0]]["dRatings"] = i[1]
-    #     else:
-    #         predictions[i[0]] = {
-    #             "dRatings": i[1]
-    #         }
+    for i in dratings_formatted_data:
+        if i[0] in predictions:
+            predictions[i[0]]["dRatings"] = i[1]
+        else:
+            predictions[i[0]] = {
+                "dRatings": i[1]
+            }
 
-    # print(figlet.renderText("dRatings Scores"))
-    # print(dratings_formatted_data)
+    print(figlet.renderText("dRatings Scores"))
+    print(dratings_formatted_data)
 
-    # for team in predictions:
-    #     dict = predictions[team]
-    #     total = 0
-    #     total_predictions = 0
-    #     for i in dict:
-    #         total += dict[i]
-    #         total_predictions += 1
-    #     average = round(total / total_predictions)
-    #     predictions[team]["average"] = average
+    for team in predictions:
+        dict = predictions[team]
+        total = 0
+        total_predictions = 0
+        for i in dict:
+            total += dict[i]
+            total_predictions += 1
+        average = round(total / total_predictions)
+        predictions[team]["average"] = average
 
     ###############################################################################
     # GET VEGAS LINES FROM ESPN
@@ -203,8 +203,7 @@ try:
     result = [
     {
         "team": event["competitions"][0]["competitors"][0]["team"]["shortDisplayName"],
-        # "line": event["competitions"][0]["odds"][0]["details"]
-        "line": event["competitions"][0]["odds"][0]["details"] if "odds" in event["competitions"][0] and event["competitions"][0]["odds"] else "BAL -4"
+        "line": event["competitions"][0]["odds"][0]["details"]
     }
         for event in events
     ]
@@ -216,21 +215,15 @@ try:
         return round(number * 2) / 2
 
     for dict in result:
-            # for key, val in dict.items():
-                # print(team)
             if dict["team"] in predictions:
-                # Assuming your string
-                input_string = "CLE -1.0"
-
-                # Split the string based on space
                 parts = dict["line"].split(" ")
                 favorite_abbrv = parts[0]
                 favored_team = ""
+
                 for team_dict in teamDict.lookup: 
                     if team_dict["code"] == favorite_abbrv:
                         favored_team = team_dict["name"]
 
-                # The last part of the split string is the floating-point number
                 line_float = float(parts[-1])
                 print(line_float)
                 print(favorite_abbrv)
@@ -244,7 +237,7 @@ try:
     # ORDER PREDICTIONS BY CURRENT WEEKLY MATCHUP
     ###############################################################################
     driver.execute_script("window.open('');")
-    driver.switch_to.window(driver.window_handles[1]) # 3
+    driver.switch_to.window(driver.window_handles[2]) # 3
     driver.get('https://www.nfl.com/schedules/')
     time.sleep(3)
 
@@ -295,20 +288,16 @@ try:
                 favored_team = ""
 
                 if "avgMinusSpread" in predictions[away_team]:
-                    # away_predicted = predictions[away_team]["average"]
-                    away_predicted = predictions[away_team]["oddShark"]
+                    away_predicted = predictions[away_team]["average"]
                     favored_team = away_team
                 else:
-                    # away_predicted = predictions[away_team]["average"]
-                    away_predicted = predictions[away_team]["oddShark"]
+                    away_predicted = predictions[away_team]["average"]
 
                 if "avgMinusSpread" in predictions[home_team]:
-                    # home_predicted = predictions[home_team]["average"]
-                    home_predicted = predictions[home_team]["oddShark"]
+                    home_predicted = predictions[home_team]["average"]
                     favored_team = home_team
                 else:
-                    # home_predicted = predictions[home_team]["average"]
-                    home_predicted = predictions[home_team]["oddShark"]
+                    home_predicted = predictions[home_team]["average"]
 
                 insert_command = f'INSERT INTO nfl_20232024{week_of_season} (away_team, away_predicted, home_team, home_predicted, favored_team) VALUES (%s, %s, %s, %s, %s)'
                 insert_values = (away_team, away_predicted,
@@ -341,8 +330,7 @@ try:
                     cur.execute(insert_command, insert_value)
                 else:
                     dog_team = team_name
-                    # dog_avg = predictions[team_name]["average"]
-                    dog_avg = predictions[team_name]["oddShark"]
+                    dog_avg = predictions[team_name]["average"]
             pick = ""
             if avg_minus_spread == dog_avg:
                 pick = f"PUSH {fav_team} vs {dog_team}"

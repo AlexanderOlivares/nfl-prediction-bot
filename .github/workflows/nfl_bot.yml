@@ -3,7 +3,7 @@ name: Run nfl scraper
 on:
   workflow_dispatch:
   schedule:
-    - cron: "30 22 * * 4" # every Thursday at 5:30pm ct
+    - cron: "00 18 * * 4" # every Thursday at noon ct
 
 jobs:
   build:
