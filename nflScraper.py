@@ -295,16 +295,20 @@ try:
                 favored_team = ""
 
                 if "avgMinusSpread" in predictions[away_team]:
-                    away_predicted = predictions[away_team]["average"]
+                    # away_predicted = predictions[away_team]["average"]
+                    away_predicted = predictions[away_team]["oddShark"]
                     favored_team = away_team
                 else:
-                    away_predicted = predictions[away_team]["average"]
+                    # away_predicted = predictions[away_team]["average"]
+                    away_predicted = predictions[away_team]["oddShark"]
 
                 if "avgMinusSpread" in predictions[home_team]:
-                    home_predicted = predictions[home_team]["average"]
+                    # home_predicted = predictions[home_team]["average"]
+                    home_predicted = predictions[home_team]["oddShark"]
                     favored_team = home_team
                 else:
-                    home_predicted = predictions[home_team]["average"]
+                    # home_predicted = predictions[home_team]["average"]
+                    home_predicted = predictions[home_team]["oddShark"]
 
                 insert_command = f'INSERT INTO nfl_20232024{week_of_season} (away_team, away_predicted, home_team, home_predicted, favored_team) VALUES (%s, %s, %s, %s, %s)'
                 insert_values = (away_team, away_predicted,
