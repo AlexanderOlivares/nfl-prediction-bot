@@ -35,6 +35,7 @@ def normal_round(number):
 def format_vegas_line(espn_vegas_lines, predictions):
     for i in espn_vegas_lines:
         team_name_and_data = i.text.split('\n')
+        print(i)
         print(team_name_and_data)
         if len(team_name_and_data) == 2:
             full_team_name, data = team_name_and_data

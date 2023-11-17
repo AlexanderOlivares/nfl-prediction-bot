@@ -187,7 +187,8 @@ try:
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.CLASS_NAME, "Table__TR")))
 
-    espn_vegas_lines = driver.find_elements_by_class_name('Table__TR')
+    # espn_vegas_lines = driver.find_elements_by_class_name('Table__TR')
+    espn_vegas_lines = driver.find_elements_by_class_name('Table__TR Table__TR--sm Table__even')
 
     predictions = format_vegas_line(
         espn_vegas_lines, predictions)
