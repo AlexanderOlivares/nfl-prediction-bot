@@ -10,6 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 import sentry_sdk
+import requests
 
 if "PRODUCTION" in os.environ:
     from env_configs import prod_config as config
@@ -206,6 +207,28 @@ try:
 
     nfl_com_schedule = driver.find_element_by_id("main-content")
     nfl_com_sched = nfl_com_schedule.text.split('\n')
+
+    url = f"https://site.web.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard"
+    response = requests.get(url)
+    espn_lines_response = response.json()
+
+    events = espn_lines_response.events
+    # events.map(event=> {
+    #     return {
+    #     team: event.competitions[0].competitors[0].team.shortDisplayName,
+    #     line: event.competitions[0].odds[0].details
+    #     }
+    # })
+    result = [
+    {
+        "team": event["competitions"][0]["competitors"][0]["team"]["shortDisplayName"],
+        "line": event["competitions"][0]["odds"][0]["details"]
+    }
+        for event in events
+    ]
+
+    print(json.dumps(result, indent=4))
+
 
     ###############################################################################
     # WRITE TO DB
