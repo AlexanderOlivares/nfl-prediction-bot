@@ -2,8 +2,8 @@ name: Run NBA bot
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 15 * * *" # every day at 10am CT
+  # schedule:
+  #   - cron: "0 16 * * *" # every day at 10am CT
 
 jobs:
   build:
