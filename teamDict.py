@@ -81,7 +81,7 @@ lookup = [
         "alt": "Kansas city",
     },
     {
-        "code": "LA",
+        "code": "LAR",
         "name": "Rams",
         "full_name": "Los Angeles Rams",
         "alt": "La rams",
